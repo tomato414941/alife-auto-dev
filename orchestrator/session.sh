@@ -13,11 +13,10 @@ LOG="$LOGDIR/$(date +%Y%m%d_%H%M%S).log"
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) session_start" >> "$SESSIONS_LOG"
 
-cd "$PROJECT_DIR"
-
 timeout "${TIMEOUT:-45}m" codex exec \
   "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")" \
   --dangerously-bypass-approvals-and-sandbox \
+  --cd "$PROJECT_DIR/alife" \
   --json > "$LOG" 2>"$LOG.err" &
 
 CODEX_PID=$!

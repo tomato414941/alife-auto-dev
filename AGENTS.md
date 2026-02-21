@@ -1,8 +1,7 @@
 # alife-auto-dev
 
-AI builds an alife simulation from scratch in `sim/`.
+Orchestrator for autonomous alife simulation development.
 
-- `orchestrator/` is read-only. Never modify.
-- `sim/` is your workspace. `docs/` is your documentation.
-- npm, TypeScript, vitest.
-- Commit frequently, push at session end. Never commit broken code.
+- `orchestrator/` contains session management scripts.
+- `alife/` is a separate git repo (autonomy414941/alife). Do not modify from here.
+- Logs are in `logs/` (gitignored).
