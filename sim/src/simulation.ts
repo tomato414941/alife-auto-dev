@@ -22,6 +22,7 @@ const DEFAULT_CONFIG: SimulationConfig = {
   reproduceProbability: 0.35,
   offspringEnergyFraction: 0.45,
   mutationAmount: 0.2,
+  speciationThreshold: 0.25,
   maxAge: 120
 };
 
@@ -56,15 +57,18 @@ export class LifeSimulation {
 
   private nextAgentId = 1;
 
+  private nextSpeciesId = 1;
+
   constructor(options: LifeSimulationOptions = {}) {
     this.config = { ...DEFAULT_CONFIG, ...(options.config ?? {}) };
     this.rng = new Rng(options.seed ?? 1);
     this.resources = this.buildInitialResources();
     this.agents = options.initialAgents
-      ? options.initialAgents.map((seed, index) => this.createAgentFromSeed(seed, index + 1))
+      ? options.initialAgents.map((seed, index) => this.createAgentFromSeed(seed, index + 1, index + 1))
       : this.spawnInitialPopulation();
     if (this.agents.length > 0) {
       this.nextAgentId = Math.max(...this.agents.map((agent) => agent.id)) + 1;
+      this.nextSpeciesId = Math.max(...this.agents.map((agent) => agent.species)) + 1;
     }
   }
 
@@ -100,6 +104,9 @@ export class LifeSimulation {
     this.agents = this.agents.filter((agent) => agent.energy > 0 && agent.age <= this.config.maxAge);
 
     const afterCount = this.agents.length;
+    const meanEnergy = this.meanEnergy();
+    const meanGenome = this.meanGenome();
+    const diversity = this.diversityMetrics();
     this.tickCount += 1;
 
     return {
@@ -107,8 +114,12 @@ export class LifeSimulation {
       population: afterCount,
       births,
       deaths: beforeCount + births - afterCount,
-      meanEnergy: this.meanEnergy(),
-      meanGenome: this.meanGenome()
+      meanEnergy,
+      meanGenome,
+      activeClades: diversity.activeClades,
+      activeSpecies: diversity.activeSpecies,
+      dominantSpeciesShare: diversity.dominantSpeciesShare,
+      selectionDifferential: this.selectionDifferential(meanGenome)
     };
   }
 
@@ -121,10 +132,14 @@ export class LifeSimulation {
   }
 
   snapshot(): SimulationSnapshot {
+    const diversity = this.diversityMetrics();
     return {
       tick: this.tickCount,
       population: this.agents.length,
       meanEnergy: this.meanEnergy(),
+      activeClades: diversity.activeClades,
+      activeSpecies: diversity.activeSpecies,
+      dominantSpeciesShare: diversity.dominantSpeciesShare,
       agents: this.agents.map((agent) => ({
         ...agent,
         genome: { ...agent.genome }
@@ -150,9 +165,12 @@ export class LifeSimulation {
         harvest: this.randomTrait(MIN_GENOME.harvest, MAX_GENOME.harvest),
         aggression: this.randomTrait(MIN_GENOME.aggression, MAX_GENOME.aggression)
       };
+      const id = this.nextAgentId++;
+      const lineage = id;
       agents.push({
-        id: this.nextAgentId++,
-        lineage: this.nextAgentId,
+        id,
+        lineage,
+        species: this.nextSpeciesId++,
         x: this.rng.int(this.config.width),
         y: this.rng.int(this.config.height),
         energy: this.config.initialEnergy * (0.8 + this.rng.float() * 0.4),
@@ -163,10 +181,11 @@ export class LifeSimulation {
     return agents;
   }
 
-  private createAgentFromSeed(seed: AgentSeed, fallbackLineage: number): Agent {
+  private createAgentFromSeed(seed: AgentSeed, fallbackLineage: number, fallbackSpecies: number): Agent {
     const agent: Agent = {
       id: this.nextAgentId++,
       lineage: seed.lineage ?? fallbackLineage,
+      species: seed.species ?? fallbackSpecies,
       x: this.wrapX(seed.x),
       y: this.wrapY(seed.y),
       energy: seed.energy,
@@ -266,6 +285,9 @@ export class LifeSimulation {
   private reproduce(parent: Agent): Agent {
     const childEnergy = parent.energy * this.config.offspringEnergyFraction;
     parent.energy -= childEnergy;
+    const childGenome = this.mutateGenome(parent.genome);
+    const diverged =
+      genomeDistance(parent.genome, childGenome) >= this.config.speciationThreshold;
 
     const neighbors = [
       { x: parent.x, y: parent.y },
@@ -279,11 +301,12 @@ export class LifeSimulation {
     return {
       id: this.nextAgentId++,
       lineage: parent.lineage,
+      species: diverged ? this.nextSpeciesId++ : parent.species,
       x: childPos.x,
       y: childPos.y,
       energy: childEnergy,
       age: 0,
-      genome: this.mutateGenome(parent.genome)
+      genome: childGenome
     };
   }
 
@@ -346,6 +369,53 @@ export class LifeSimulation {
     };
   }
 
+  private diversityMetrics(): { activeClades: number; activeSpecies: number; dominantSpeciesShare: number } {
+    if (this.agents.length === 0) {
+      return { activeClades: 0, activeSpecies: 0, dominantSpeciesShare: 0 };
+    }
+
+    const clades = new Set<number>();
+    const speciesCounts = new Map<number, number>();
+    for (const agent of this.agents) {
+      clades.add(agent.lineage);
+      speciesCounts.set(agent.species, (speciesCounts.get(agent.species) ?? 0) + 1);
+    }
+
+    const dominantCount = Math.max(...speciesCounts.values());
+    return {
+      activeClades: clades.size,
+      activeSpecies: speciesCounts.size,
+      dominantSpeciesShare: dominantCount / this.agents.length
+    };
+  }
+
+  private selectionDifferential(meanGenome: Genome): Genome {
+    if (this.agents.length === 0) {
+      return { metabolism: 0, harvest: 0, aggression: 0 };
+    }
+
+    const totalEnergy = this.agents.reduce((sum, agent) => sum + agent.energy, 0);
+    if (totalEnergy <= 0) {
+      return { metabolism: 0, harvest: 0, aggression: 0 };
+    }
+
+    const weightedTotals = this.agents.reduce(
+      (acc, agent) => {
+        acc.metabolism += agent.genome.metabolism * agent.energy;
+        acc.harvest += agent.genome.harvest * agent.energy;
+        acc.aggression += agent.genome.aggression * agent.energy;
+        return acc;
+      },
+      { metabolism: 0, harvest: 0, aggression: 0 }
+    );
+
+    return {
+      metabolism: weightedTotals.metabolism / totalEnergy - meanGenome.metabolism,
+      harvest: weightedTotals.harvest / totalEnergy - meanGenome.harvest,
+      aggression: weightedTotals.aggression / totalEnergy - meanGenome.aggression
+    };
+  }
+
   private isAlive(agentId: number): boolean {
     return this.agents.some((agent) => agent.id === agentId && agent.energy > 0);
   }
@@ -363,4 +433,12 @@ export class LifeSimulation {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+function genomeDistance(a: Genome, b: Genome): number {
+  return (
+    Math.abs(a.metabolism - b.metabolism) +
+    Math.abs(a.harvest - b.harvest) +
+    Math.abs(a.aggression - b.aggression)
+  );
 }

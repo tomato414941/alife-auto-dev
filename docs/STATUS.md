@@ -1,22 +1,25 @@
 # Status - 2026-02-21
 
-Current phase: first playable simulation core in `sim/`.
+Current phase: evolutionary observability (speciation + selection signals).
 
 What exists now:
-- TypeScript + Vitest project initialized with npm.
-- Deterministic simulation loop (`LifeSimulation`) with seeded RNG.
-- World resources regenerate on a toroidal grid.
-- Agents move toward food, pay metabolic/movement costs, harvest energy.
-- Multi-agent cell encounters transfer energy based on aggression.
-- Reproduction creates offspring with mutated genomes.
-- Death by starvation/age is enforced.
-- CLI runner prints periodic population and trait summaries.
-- Test suite covers determinism, reproduction/mutation, aggression encounters, starvation death.
+- TypeScript + Vitest simulation project in `sim/` with deterministic seeded core.
+- Resource field regeneration, movement/harvest metabolism, aggression encounters.
+- Reproduction with mutation and starvation/age death.
+- Heritable clade tracking (`lineage`) and heritable species IDs (`species`).
+- Speciation during reproduction when child genome divergence crosses `speciationThreshold`.
+- Per-step evolutionary metrics:
+  - diversity (`activeClades`, `activeSpecies`, `dominantSpeciesShare`)
+  - selection differential (`selectionDifferential`) using energy-weighted traits.
+- CLI runner reports traits plus species/clade and selection metrics every interval.
+- Test suite now covers determinism, mutation/speciation behavior, aggression encounters,
+  starvation death, diversity metrics, and selection differential math.
 
 Verification:
+- `cd sim && npm test` passes (6 tests).
 - `cd sim && npm run build` passes.
-- `cd sim && npm test` passes (4 tests).
-- `cd sim && npm start` runs 200 ticks and shows trait drift.
+- `cd sim && npm start` runs and prints the new metrics through 200 ticks.
 
 Next focus:
-- Add explicit heritable species/clade tracking and selection metrics over time.
+- Add persistent historical tracking (per-clade/species birth/death/extinction timeline)
+  so selection and turnover can be analyzed across ticks rather than only current state.

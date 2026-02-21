@@ -7,6 +7,7 @@ export interface Genome {
 export interface Agent {
   id: number;
   lineage: number;
+  species: number;
   x: number;
   y: number;
   energy: number;
@@ -21,6 +22,7 @@ export interface AgentSeed {
   genome: Genome;
   age?: number;
   lineage?: number;
+  species?: number;
 }
 
 export interface SimulationConfig {
@@ -37,6 +39,7 @@ export interface SimulationConfig {
   reproduceProbability: number;
   offspringEnergyFraction: number;
   mutationAmount: number;
+  speciationThreshold: number;
   maxAge: number;
 }
 
@@ -47,11 +50,18 @@ export interface StepSummary {
   deaths: number;
   meanEnergy: number;
   meanGenome: Genome;
+  activeClades: number;
+  activeSpecies: number;
+  dominantSpeciesShare: number;
+  selectionDifferential: Genome;
 }
 
 export interface SimulationSnapshot {
   tick: number;
   population: number;
   meanEnergy: number;
+  activeClades: number;
+  activeSpecies: number;
+  dominantSpeciesShare: number;
   agents: Agent[];
 }

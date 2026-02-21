@@ -27,6 +27,7 @@ describe('LifeSimulation', () => {
         reproduceProbability: 1,
         offspringEnergyFraction: 0.5,
         mutationAmount: 0.3,
+        speciationThreshold: 0,
         maxAge: 100
       },
       initialAgents: [
@@ -47,7 +48,13 @@ describe('LifeSimulation', () => {
     expect(after).toHaveLength(2);
 
     const child = after.find((agent) => agent.age === 0);
+    const parent = after.find((agent) => agent.age === 1);
     expect(child).toBeDefined();
+    expect(parent).toBeDefined();
+    expect(child!.lineage).toBe(parent!.lineage);
+    expect(child!.species).not.toBe(parent!.species);
+    expect(summary.activeSpecies).toBe(2);
+    expect(summary.activeClades).toBe(1);
 
     const delta =
       Math.abs(child!.genome.metabolism - before.metabolism) +
@@ -127,5 +134,91 @@ describe('LifeSimulation', () => {
 
     expect(summary.population).toBe(0);
     expect(summary.deaths).toBe(1);
+  });
+
+  it('tracks clade/species diversity and dominant species share', () => {
+    const sim = new LifeSimulation({
+      seed: 19,
+      config: {
+        width: 100,
+        height: 1,
+        maxResource: 0,
+        resourceRegen: 0,
+        metabolismCostBase: 0,
+        moveCost: 0,
+        harvestCap: 0,
+        reproduceProbability: 0,
+        maxAge: 100
+      },
+      initialAgents: [
+        {
+          x: 0,
+          y: 0,
+          energy: 10,
+          genome: { metabolism: 1, harvest: 1, aggression: 0.2 },
+          lineage: 1,
+          species: 1
+        },
+        {
+          x: 50,
+          y: 0,
+          energy: 10,
+          genome: { metabolism: 1, harvest: 1, aggression: 0.2 },
+          lineage: 2,
+          species: 1
+        },
+        {
+          x: 80,
+          y: 0,
+          energy: 10,
+          genome: { metabolism: 1, harvest: 1, aggression: 0.2 },
+          lineage: 3,
+          species: 2
+        }
+      ]
+    });
+
+    const summary = sim.step();
+
+    expect(summary.activeClades).toBe(3);
+    expect(summary.activeSpecies).toBe(2);
+    expect(summary.dominantSpeciesShare).toBeCloseTo(2 / 3, 10);
+  });
+
+  it('reports energy-weighted trait selection differentials', () => {
+    const sim = new LifeSimulation({
+      seed: 23,
+      config: {
+        width: 100,
+        height: 1,
+        maxResource: 0,
+        resourceRegen: 0,
+        metabolismCostBase: 0,
+        moveCost: 0,
+        harvestCap: 0,
+        reproduceProbability: 0,
+        maxAge: 100
+      },
+      initialAgents: [
+        {
+          x: 0,
+          y: 0,
+          energy: 9,
+          genome: { metabolism: 2, harvest: 1, aggression: 0.9 }
+        },
+        {
+          x: 50,
+          y: 0,
+          energy: 3,
+          genome: { metabolism: 1, harvest: 2, aggression: 0.1 }
+        }
+      ]
+    });
+
+    const summary = sim.step();
+
+    expect(summary.selectionDifferential.metabolism).toBeCloseTo(0.25, 10);
+    expect(summary.selectionDifferential.harvest).toBeCloseTo(-0.25, 10);
+    expect(summary.selectionDifferential.aggression).toBeCloseTo(0.2, 10);
   });
 });
