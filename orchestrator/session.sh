@@ -15,19 +15,14 @@ echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) session_start" >> "$SESSIONS_LOG"
 
 cd "$PROJECT_DIR"
 
-# Allow launching Claude Code from within another session (cron is fine, manual test may be nested)
-unset CLAUDECODE 2>/dev/null || true
+timeout "${TIMEOUT:-45}m" codex exec \
+  "$(cat "$SCRIPT_DIR/AGENT_PROMPT.md")" \
+  --dangerously-bypass-approvals-and-sandbox \
+  --json > "$LOG" 2>"$LOG.err" &
 
-timeout "${TIMEOUT:-45}m" /home/dev/.local/bin/claude -p "$(cat "$SCRIPT_DIR/AGENT_PROMPT.md")" \
-  --dangerously-skip-permissions \
-  --max-turns "${MAX_TURNS:-80}" \
-  --model "${MODEL:-sonnet}" \
-  --output-format stream-json \
-  --verbose > "$LOG" 2>"$LOG.err" &
-
-CLAUDE_PID=$!
+CODEX_PID=$!
 set +e
-wait $CLAUDE_PID 2>/dev/null
+wait $CODEX_PID 2>/dev/null
 EXIT_STATUS=$?
 set -e
 

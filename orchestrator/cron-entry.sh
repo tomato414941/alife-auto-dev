@@ -12,7 +12,7 @@ exec 200>"$LOCKFILE"
 flock -n 200 || { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) SKIP: another session running" >> "$PROJECT_DIR/logs/sessions.log"; exit 0; }
 
 # Load API key
-source ~/.secrets/anthropic
+source ~/.secrets/openai
 
 # Execute session
 bash "$SCRIPT_DIR/session.sh"

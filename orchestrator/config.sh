@@ -1,3 +1,1 @@
 TIMEOUT=45
-MAX_TURNS=80
-MODEL=sonnet
