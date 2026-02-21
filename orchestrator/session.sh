@@ -27,6 +27,9 @@ set -e
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) session_end code=$EXIT_STATUS log_size=$(wc -c < "$LOG")" >> "$SESSIONS_LOG"
 
+# Run evaluation after development session
+bash "$SCRIPT_DIR/evaluate.sh"
+
 # Auto-cleanup: keep only last 30 days of logs
 find "$LOGDIR" -name "*.log" -mtime +30 -delete 2>/dev/null || true
 find "$LOGDIR" -name "*.log.err" -mtime +30 -delete 2>/dev/null || true
