@@ -16,7 +16,7 @@ echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) session_start" >> "$SESSIONS_LOG"
 cd "$PROJECT_DIR"
 
 timeout "${TIMEOUT:-45}m" codex exec \
-  "$(cat "$SCRIPT_DIR/AGENT_PROMPT.md")" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")" \
   --dangerously-bypass-approvals-and-sandbox \
   --json > "$LOG" 2>"$LOG.err" &
 
