@@ -26,8 +26,10 @@ timeout "${TIMEOUT:-45}m" /home/dev/.local/bin/claude -p "$(cat "$SCRIPT_DIR/AGE
   --verbose > "$LOG" 2>"$LOG.err" &
 
 CLAUDE_PID=$!
+set +e
 wait $CLAUDE_PID 2>/dev/null
 EXIT_STATUS=$?
+set -e
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) session_end code=$EXIT_STATUS log_size=$(wc -c < "$LOG")" >> "$SESSIONS_LOG"
 
