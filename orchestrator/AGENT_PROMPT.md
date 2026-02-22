@@ -17,12 +17,14 @@ Every session, follow this loop:
 1. **Read `docs/STATUS.md`**. If it does not exist, this is your first session.
 2. **Read `docs/EVALUATION.md`** if it exists. This is feedback from a separate
    reviewer agent. Take it into account when deciding what to work on.
-3. **Decide** what to work on. You own the roadmap. Write it, revise it,
+3. **Read `docs/DIRECTIVE.md`** if it exists. This is guidance from a pre-session
+   evaluator. Consider its suggestions, but you own the final decision.
+4. **Decide** what to work on. You own the roadmap. Write it, revise it,
    throw it away — it is yours.
-4. **Implement** in `src/`. Write tests for anything non-trivial.
-5. **Verify**: make sure tests pass and code compiles before committing.
-6. **Commit & push**. Small, frequent commits. Push to origin/main.
-7. **Update `docs/`**:
+5. **Implement** in `src/`. Write tests for anything non-trivial.
+6. **Verify**: make sure tests pass and code compiles before committing.
+7. **Commit & push**. Small, frequent commits. Push to origin/main.
+8. **Update `docs/`**:
    - Overwrite `docs/STATUS.md` with where you are now and what is next (max 30 lines).
    - Append to `docs/DEVLOG.md`: date, what you did, what you observed, what you are thinking.
    - Maintain any other docs you find useful (architecture, roadmap, etc.).

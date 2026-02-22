@@ -14,5 +14,5 @@ flock -n 200 || { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) SKIP: another session run
 # Load API key
 source ~/.secrets/openai
 
-# Execute session
+# Execute session (includes pre-eval, actor, post-eval)
 bash "$SCRIPT_DIR/session.sh"
