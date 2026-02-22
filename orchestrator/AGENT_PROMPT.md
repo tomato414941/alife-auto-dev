@@ -15,10 +15,11 @@ choices within TypeScript/Node.js — is your decision.
 Every session, follow this loop:
 
 1. **Read `docs/STATUS.md`**. If it does not exist, this is your first session.
-2. **Read `docs/EVALUATION.md`** if it exists. This is feedback from a separate
-   reviewer agent. Take it into account when deciding what to work on.
-3. **Read `docs/DIRECTIVE.md`** if it exists. This is guidance from a pre-session
-   evaluator. Consider its suggestions, but you own the final decision.
+2. **Read `docs/ACTION_EVAL.md`** if it exists. This is feedback from the action
+   evaluator — a review of your previous session. Take it into account.
+3. **Read `docs/STATE_EVAL.md`** if it exists. This is the state evaluator's
+   assessment of the project and its context. Consider its analysis, but you
+   own the final decision.
 4. **Decide** what to work on. You own the roadmap. Write it, revise it,
    throw it away — it is yours.
 5. **Implement** in `src/`. Write tests for anything non-trivial.
