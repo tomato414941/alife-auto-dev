@@ -40,8 +40,11 @@ echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor finished (exit=$ACTOR_EXIT)"
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Action Evaluator"
 ACTION_EVAL_EXIT=0
 source ~/.secrets/openai
-timeout "${ACTION_EVAL_TIMEOUT:-5}m" codex exec \
-  "$(cat "$SCRIPT_DIR/EVAL_ACTION_PROMPT.md")" \
+ACTION_EVAL_PROMPT="$(cat "$SCRIPT_DIR/EVAL_ACTION_PROMPT.md")
+
+The actor session log is at: $LOG_ACTOR"
+timeout "${ACTION_EVAL_TIMEOUT:-15}m" codex exec \
+  "$ACTION_EVAL_PROMPT" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_ACTION_EVAL" 2>"$LOG_ACTION_EVAL.err" || ACTION_EVAL_EXIT=$?

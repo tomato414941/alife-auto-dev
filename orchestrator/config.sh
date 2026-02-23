@@ -1,3 +1,3 @@
 STATE_EVAL_TIMEOUT=5      # minutes
 TIMEOUT=35                # minutes (actor)
-ACTION_EVAL_TIMEOUT=5     # minutes
+ACTION_EVAL_TIMEOUT=15    # minutes (reads full actor log)

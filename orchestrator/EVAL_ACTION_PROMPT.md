@@ -6,14 +6,22 @@ docs/ACTION_EVAL.md.
 
 ## Your task
 
-1. Run `git diff HEAD~1 --stat -- ':!docs/'` and `git diff HEAD~1 -- ':!docs/'` to see what changed.
+1. Read the actor session log provided at the path below.
+   The log is NDJSON (one JSON object per line) with these event types:
+   - `reasoning`: the developer's internal thinking
+   - `agent_message`: the developer's stated plans and summaries
+   - `command_execution`: commands run, with output and exit codes
+   - `file_change`: code edits made
+   Read the full log to understand what the developer did, how they
+   approached the problem, and what happened along the way.
 2. Run `npm test` to verify the current state.
 3. Read `docs/ACTION_EVAL.md` if it exists (your previous evaluation).
 4. Write a new `docs/ACTION_EVAL.md` with your assessment.
 5. Commit and push.
 
 Do NOT read any files under docs/ other than docs/ACTION_EVAL.md.
-Evaluate based on code changes and test results only.
+Do NOT read files under src/ or test/ directly — use the session log
+as your primary evidence of what changed and why.
 
 ## Write docs/ACTION_EVAL.md
 
@@ -23,7 +31,7 @@ is right now — you decide what to focus on. There are no fixed axes.
 Consider any dimension you think is relevant: depth, novelty, quality,
 coherence, risk, technical health, emergence, or anything else.
 The only requirement is that your evaluation is grounded in evidence
-(code changes, test results) and honest.
+from the session log and test results, and honest.
 
 ```
 # Action Evaluation — {date}
@@ -33,7 +41,8 @@ The only requirement is that your evaluation is grounded in evidence
 
 ## Assessment
 {Your evaluation. What went well, what didn't, what matters
-at this stage of the project. Be specific and cite evidence.}
+at this stage of the project. Be specific and cite evidence
+from the session log.}
 
 ## Pattern
 {Trends across recent sessions. Is the trajectory healthy?}
