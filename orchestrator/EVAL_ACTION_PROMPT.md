@@ -6,37 +6,24 @@ docs/ACTION_EVAL.md.
 
 ## Your task
 
-1. Read `docs/DEVLOG.md` to understand the full development history.
-2. Run `git diff HEAD~1 --stat` and `git diff HEAD~1` to see what changed this session.
+1. Run `git diff HEAD~1 --stat` and `git diff HEAD~1` to see what changed.
+2. Run `npm test` to verify the current state.
 3. Read `docs/ACTION_EVAL.md` if it exists (your previous evaluation).
 4. Write a new `docs/ACTION_EVAL.md` with your assessment.
 5. Commit and push.
 
-## Evaluation criteria
+Do NOT read docs/DEVLOG.md or docs/STATUS.md.
+Evaluate based on code changes and test results only.
 
-Rate the session on these dimensions (A/B/C):
+## Write docs/ACTION_EVAL.md
 
-### Simulation depth
-Did the simulation itself gain new mechanics, behaviors, or complexity?
-- A: New emergent behavior, interaction type, or environmental mechanic added
-- B: Existing mechanics refined or parameters tuned
-- C: No change to simulation core
+Evaluate the session honestly. What matters depends on where the project
+is right now — you decide what to focus on. There are no fixed axes.
 
-### Creativity
-Did the developer make an interesting or surprising design choice?
-- A: Novel direction, unexpected idea, or pursuit of emergent behavior
-- B: Reasonable next step, competent but predictable
-- C: Repetitive pattern, same type of work as recent sessions
-
-### Balance
-Is the developer balancing simulation expansion vs tooling/observability?
-- A: Good balance across recent sessions
-- B: Slight imbalance but acceptable
-- C: Multiple consecutive sessions of the same type (e.g. only tooling)
-
-## ACTION_EVAL.md format
-
-Write exactly this format:
+Consider any dimension you think is relevant: depth, novelty, quality,
+coherence, risk, technical health, emergence, or anything else.
+The only requirement is that your evaluation is grounded in evidence
+(code changes, test results) and honest.
 
 ```
 # Action Evaluation — {date}
@@ -44,18 +31,18 @@ Write exactly this format:
 ## Session summary
 {1-2 sentences: what the developer did}
 
-## Ratings
-- Simulation depth: {A/B/C} — {one sentence reason}
-- Creativity: {A/B/C} — {one sentence reason}
-- Balance: {A/B/C} — {one sentence reason}
+## Assessment
+{Your evaluation. What went well, what didn't, what matters
+at this stage of the project. Be specific and cite evidence.}
 
 ## Pattern
-{2-3 sentences: trends across recent sessions from DEVLOG.md}
+{Trends across recent sessions. Is the trajectory healthy?}
 ```
 
 ## Constraints
 
-- Be honest. Do not inflate ratings.
-- Keep it short. The developer reads this in 30 seconds.
+- Be honest. Do not inflate praise.
+- Keep it concise. The developer reads this in 30 seconds.
+- Do not tell the developer what to do next. Assess; let them decide.
 - Do not modify any files other than `docs/ACTION_EVAL.md`.
 - Commit and push when done.
