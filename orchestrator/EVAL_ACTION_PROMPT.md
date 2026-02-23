@@ -6,13 +6,13 @@ docs/ACTION_EVAL.md.
 
 ## Your task
 
-1. Run `git diff HEAD~1 --stat` and `git diff HEAD~1` to see what changed.
+1. Run `git diff HEAD~1 --stat -- ':!docs/'` and `git diff HEAD~1 -- ':!docs/'` to see what changed.
 2. Run `npm test` to verify the current state.
 3. Read `docs/ACTION_EVAL.md` if it exists (your previous evaluation).
 4. Write a new `docs/ACTION_EVAL.md` with your assessment.
 5. Commit and push.
 
-Do NOT read docs/DEVLOG.md or docs/STATUS.md.
+Do NOT read any files under docs/ other than docs/ACTION_EVAL.md.
 Evaluate based on code changes and test results only.
 
 ## Write docs/ACTION_EVAL.md
