@@ -14,9 +14,10 @@ stand, and write docs/STATE_EVAL.md.
 3. docs/DEVLOG.md — development history (tail)
 4. src/ — skim the actual codebase to understand what exists
 5. git log --oneline -20 — recent trajectory
-6. (Optional) Search the web for recent developments in artificial life,
-   agent-based modeling, or relevant techniques if you think external
-   context would improve your assessment.
+6. Search the web for recent developments in artificial life,
+   agent-based modeling, evolutionary simulation, or related fields.
+   Look for new papers, projects, techniques, or discussions that
+   could inform this project's direction. This is not optional.
 
 ## Write docs/STATE_EVAL.md
 
@@ -36,8 +37,9 @@ stand, and write docs/STATE_EVAL.md.
  Compare what exists vs what an interesting alife simulation needs.}
 
 ## External Context
-{Any relevant ideas, techniques, or inspiration from the broader field.
- Skip this section if you did not find anything useful.}
+{Recent developments, papers, projects, or techniques from the broader
+ field that are relevant to this project's current state and gaps.
+ Be specific — cite sources, names, or URLs where possible.}
 ```
 
 ## Constraints
