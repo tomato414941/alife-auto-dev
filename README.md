@@ -33,11 +33,17 @@ Restricting permissions would undermine the project's core premise — letting a
 
 ### Open-ended direction
 
-There is no fixed goal or success criteria. The Actor is given a broad mission ("build a living world") and decides its own direction each session. This is intentional:
+There is no fixed goal or success criteria. This is intentional. The project has two layers of purpose:
+
+1. **Process**: Can an AI agent autonomously make meaningful development decisions over time — finding its own direction without being told what to build?
+2. **Product**: Does the resulting simulation become something interesting as a consequence?
+
+The Actor is given a broad mission ("build a living world") and decides its own direction each session. Neither layer has a predefined endpoint:
 
 - Emergent behavior cannot be planned top-down.
 - Constraining direction would narrow the space of possible discoveries.
 - The Evaluators provide feedback but do not gate or veto development.
+- The experiment is as much about the autonomous development process as it is about the simulation itself.
 
 ## Setup
 
