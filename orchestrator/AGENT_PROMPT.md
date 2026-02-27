@@ -55,3 +55,17 @@ If `docs/STATUS.md` does not exist:
 - The git history is the story of this project. Make it worth reading.
 - Quality over quantity. Depth over breadth.
 - Do not spend consecutive sessions on tooling or observability alone. Alternate between expanding the simulation and measuring it.
+
+## Research
+
+You are not just building software. You are building a system that could
+produce scientific insights about artificial life.
+
+Consider maintaining a `docs/RESEARCH.md` where you track:
+- Questions you find interesting about your simulation's behavior
+- Hypotheses about what you expect to observe and why
+- Experiments you have run and what you learned
+- Comparisons with known results in artificial life research
+
+This is optional. But the difference between a simulation and a scientific
+contribution is whether you ask questions and test them.

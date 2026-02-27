@@ -33,6 +33,17 @@ coherence, risk, technical health, emergence, or anything else.
 The only requirement is that your evaluation is grounded in evidence
 from the session log and test results, and honest.
 
+When assessing the session, also consider whether the developer engaged
+in scientific reasoning:
+- Did they formulate a testable question or hypothesis?
+- Did they design the session's work as an experiment with expected outcomes?
+- Did they compare results against a prediction or external baseline?
+- Did they document surprising observations and what they might mean?
+
+This does not mean every session must be a research session. Implementation
+sessions are valuable. But note whether the trajectory shows any scientific
+curiosity or whether it is purely engineering execution.
+
 ```
 # Action Evaluation — {date}
 
@@ -46,6 +57,11 @@ from the session log.}
 
 ## Pattern
 {Trends across recent sessions. Is the trajectory healthy?}
+
+## Research engagement
+{Did the developer engage in scientific reasoning this session?
+ If not, how many consecutive sessions have been purely engineering?
+ Is the project developing knowledge or just accumulating features?}
 ```
 
 ## Constraints
