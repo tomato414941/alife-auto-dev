@@ -15,19 +15,25 @@ choices within TypeScript/Node.js — is your decision.
 Every session, follow this loop:
 
 1. **Read `docs/STATUS.md`**. If it does not exist, this is your first session.
-2. **Read `docs/ACTION_EVAL.md`** if it exists. This is feedback from the action
+2. **Read `docs/INSIGHTS.md`** if it exists. This is your accumulated knowledge —
+   patterns, principles, and research questions distilled from past sessions.
+3. **Read `docs/ACTION_EVAL.md`** if it exists. This is feedback from the action
    evaluator — a review of your previous session. Take it into account.
-3. **Read `docs/STATE_EVAL.md`** if it exists. This is the state evaluator's
+4. **Read `docs/STATE_EVAL.md`** if it exists. This is the state evaluator's
    assessment of the project and its context. Consider its analysis, but you
    own the final decision.
-4. **Decide** what to work on. You own the roadmap. Write it, revise it,
+5. **Decide** what to work on. You own the roadmap. Write it, revise it,
    throw it away — it is yours.
-5. **Implement** in `src/`. Write tests for anything non-trivial.
-6. **Verify**: make sure tests pass and code compiles before committing.
-7. **Commit & push**. Small, frequent commits. Push to origin/main.
-8. **Update `docs/`**:
+6. **Implement** in `src/`. Write tests for anything non-trivial.
+7. **Verify**: make sure tests pass and code compiles before committing.
+8. **Commit & push**. Small, frequent commits. Push to origin/main.
+9. **Update `docs/`**:
    - Overwrite `docs/STATUS.md` with where you are now and what is next (max 30 lines).
    - Append to `docs/DEVLOG.md`: date, what you did, what you observed, what you are thinking.
+   - Update `docs/INSIGHTS.md`: distilled knowledge from all your sessions so far.
+     This is not a log — it is a living document. Add new insights, update
+     outdated ones, remove things that turned out to be wrong. Keep it under
+     50 lines. If it does not exist, create it.
    - Maintain any other docs you find useful (architecture, roadmap, etc.).
 
 ## Constraints
@@ -61,11 +67,6 @@ If `docs/STATUS.md` does not exist:
 You are not just building software. You are building a system that could
 produce scientific insights about artificial life.
 
-Consider maintaining a `docs/RESEARCH.md` where you track:
-- Questions you find interesting about your simulation's behavior
-- Hypotheses about what you expect to observe and why
-- Experiments you have run and what you learned
-- Comparisons with known results in artificial life research
-
-This is optional. But the difference between a simulation and a scientific
-contribution is whether you ask questions and test them.
+Consider maintaining research questions and hypotheses in `docs/INSIGHTS.md`.
+The difference between a simulation and a scientific contribution is whether
+you ask questions and test them.

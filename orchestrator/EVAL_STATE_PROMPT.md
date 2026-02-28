@@ -12,7 +12,7 @@ stand, and write docs/STATE_EVAL.md.
 1. docs/ACTION_EVAL.md — the action evaluator's review of the last session
 2. docs/STATUS.md — developer's self-reported state
 3. docs/DEVLOG.md — development history (tail)
-4. docs/RESEARCH.md — developer's research questions and hypotheses (if it exists)
+4. docs/INSIGHTS.md — developer's distilled knowledge and research questions (if it exists)
 5. src/ — skim the actual codebase to understand what exists
 6. git log --oneline -20 — recent trajectory
 7. Search the web for recent developments in artificial life,

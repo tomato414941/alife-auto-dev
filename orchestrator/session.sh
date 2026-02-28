@@ -14,16 +14,7 @@ LOG_STATE_EVAL="$LOGDIR/${LOG_BASENAME}_state_eval.log"
 LOG_ACTOR="$LOGDIR/${LOG_BASENAME}.log"
 LOG_ACTION_EVAL="$LOGDIR/${LOG_BASENAME}_action_eval.log"
 
-# --- Session counter ---
-COUNTER_FILE="$LOGDIR/.session_counter"
-if [ -f "$COUNTER_FILE" ]; then
-  SESSION_NUM=$(( $(cat "$COUNTER_FILE") + 1 ))
-else
-  SESSION_NUM=22  # continuing from 21 existing sessions
-fi
-echo "$SESSION_NUM" > "$COUNTER_FILE"
-
-echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|session=$SESSION_NUM|$LOG_BASENAME" >> "$SESSIONS_LOG"
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
 # --- Step 1: State Evaluator ---
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting State Evaluator"
@@ -37,29 +28,15 @@ echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] State Evaluator finished (exit=$STATE_EVA
 
 if [ "$STATE_EVAL_EXIT" -ne 0 ]; then
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] State Evaluator failed — skipping Actor and Action Evaluator"
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|session=$SESSION_NUM|$LOG_BASENAME" >> "$SESSIONS_LOG"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
   exit 1
 fi
 
-# --- Research checkpoint flag ---
-RESEARCH_FLAG=""
-if (( SESSION_NUM % RESEARCH_CHECKPOINT_INTERVAL == 0 )); then
-  RESEARCH_FLAG="
-
---- RESEARCH CHECKPOINT (session $SESSION_NUM) ---
-Before deciding what to implement, spend time reviewing your trajectory:
-- Read docs/RESEARCH.md if it exists. Are your questions getting answered?
-- Look at your recent sessions in docs/DEVLOG.md. What pattern do you see?
-- Is the simulation producing any behavior you did not predict?
-- Is there a question you have been avoiding?
-You may still implement code this session. But start by thinking."
-fi
-
 # --- Step 2: Actor ---
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor (session=$SESSION_NUM)"
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor"
 ACTOR_EXIT=0
 timeout "${TIMEOUT:-35}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")$RESEARCH_FLAG" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_ACTOR" 2>"$LOG_ACTOR.err" || ACTOR_EXIT=$?
@@ -67,7 +44,7 @@ echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor finished (exit=$ACTOR_EXIT)"
 
 if [ "$ACTOR_EXIT" -ne 0 ]; then
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor failed — skipping Action Evaluator"
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|session=$SESSION_NUM|$LOG_BASENAME" >> "$SESSIONS_LOG"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
   exit 1
 fi
 
@@ -85,7 +62,7 @@ timeout "${ACTION_EVAL_TIMEOUT:-30}m" codex exec \
   --json > "$LOG_ACTION_EVAL" 2>"$LOG_ACTION_EVAL.err" || ACTION_EVAL_EXIT=$?
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Action Evaluator finished (exit=$ACTION_EVAL_EXIT)"
 
-echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|finished|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|action_exit=$ACTION_EVAL_EXIT|session=$SESSION_NUM|$LOG_BASENAME" >> "$SESSIONS_LOG"
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|finished|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|action_exit=$ACTION_EVAL_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
 # Auto-cleanup: keep only last 30 days of logs
 find "$LOGDIR" -name "*.log" -mtime +30 -delete 2>/dev/null || true
