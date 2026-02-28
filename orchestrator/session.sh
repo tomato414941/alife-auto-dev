@@ -16,11 +16,24 @@ LOG_ACTION_EVAL="$LOGDIR/${LOG_BASENAME}_action_eval.log"
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
+# --- Phase 0: ASI (Agent Stability Index) ---
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Computing ASI metrics"
+ASI_EXIT=0
+ASI_METRICS=$(bash "$SCRIPT_DIR/asi.sh") || ASI_EXIT=$?
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] ASI computation finished (exit=$ASI_EXIT)"
+
+METRICS_BLOCK=""
+if [ "$ASI_EXIT" -eq 0 ] && [ -n "$ASI_METRICS" ]; then
+  METRICS_BLOCK="
+## Current Metrics (deterministic)
+$ASI_METRICS"
+fi
+
 # --- Step 1: State Evaluator ---
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting State Evaluator"
 STATE_EVAL_EXIT=0
 timeout "${STATE_EVAL_TIMEOUT:-30}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/EVAL_STATE_PROMPT.md")" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/EVAL_STATE_PROMPT.md")$METRICS_BLOCK" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_STATE_EVAL" 2>"$LOG_STATE_EVAL.err" || STATE_EVAL_EXIT=$?
@@ -36,7 +49,7 @@ fi
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor"
 ACTOR_EXIT=0
 timeout "${TIMEOUT:-35}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")$METRICS_BLOCK" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_ACTOR" 2>"$LOG_ACTOR.err" || ACTOR_EXIT=$?
@@ -52,7 +65,7 @@ fi
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Action Evaluator"
 ACTION_EVAL_EXIT=0
 source ~/.secrets/openai
-ACTION_EVAL_PROMPT="$(cat "$SCRIPT_DIR/EVAL_ACTION_PROMPT.md")
+ACTION_EVAL_PROMPT="$(cat "$SCRIPT_DIR/EVAL_ACTION_PROMPT.md")$METRICS_BLOCK
 
 The actor session log is at: $LOG_ACTOR"
 timeout "${ACTION_EVAL_TIMEOUT:-30}m" codex exec \
