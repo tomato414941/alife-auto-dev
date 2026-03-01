@@ -24,8 +24,7 @@ cron (daily 03:00 UTC)
 
 All pipeline stages run with `--dangerously-bypass-approvals-and-sandbox` and the Actor pushes directly to `main`. This is intentional:
 
-- The project runs on a **dedicated autonomous server** (not a shared or production environment).
-- It operates under the **autonomy414941 account**, isolated from personal infrastructure.
+- The project is designed to run on a **dedicated, isolated server** (not a shared or production environment).
 - The simulation repository (`autonomy414941/alife`) is a standalone project with no downstream dependencies.
 - The blast radius is contained: worst case is a broken commit in an isolated repo, easily reverted.
 
@@ -47,12 +46,7 @@ The Actor is given a broad mission ("build a living world") and decides its own 
 
 ## Setup
 
-Runs on the autonomous server via cron:
-
-```bash
-# Daily session at 03:00 UTC
-0 3 * * * /home/dev/projects/alife-auto-dev/orchestrator/run.sh >> /home/dev/projects/alife-auto-dev/logs/cron.log 2>&1
-```
+Runs via cron on a dedicated server. See `AGENTS.override.md` (not committed) for environment-specific configuration.
 
 ## Related
 
