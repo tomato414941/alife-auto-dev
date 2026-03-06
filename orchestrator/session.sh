@@ -10,9 +10,9 @@ SESSIONS_LOG="$LOGDIR/sessions.log"
 mkdir -p "$LOGDIR"
 
 LOG_BASENAME="$(date +%Y%m%d_%H%M%S)"
-LOG_STATE_EVAL="$LOGDIR/${LOG_BASENAME}_state_eval.log"
+LOG_PLANNER="$LOGDIR/${LOG_BASENAME}_planner.log"
 LOG_ACTOR="$LOGDIR/${LOG_BASENAME}.log"
-LOG_ACTION_EVAL="$LOGDIR/${LOG_BASENAME}_action_eval.log"
+LOG_VERIFY="$LOGDIR/${LOG_BASENAME}_verify.log"
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
@@ -29,19 +29,19 @@ if [ "$ASI_EXIT" -eq 0 ] && [ -n "$ASI_METRICS" ]; then
 $ASI_METRICS"
 fi
 
-# --- Step 1: State Evaluator ---
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting State Evaluator"
-STATE_EVAL_EXIT=0
-timeout "${STATE_EVAL_TIMEOUT:-30}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/EVAL_STATE_PROMPT.md")$METRICS_BLOCK" \
+# --- Step 1: Session Planner ---
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Session Planner"
+PLANNER_EXIT=0
+timeout "${PLANNER_TIMEOUT:-30}m" codex exec \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/PLANNER_PROMPT.md")$METRICS_BLOCK" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
-  --json > "$LOG_STATE_EVAL" 2>"$LOG_STATE_EVAL.err" || STATE_EVAL_EXIT=$?
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] State Evaluator finished (exit=$STATE_EVAL_EXIT)"
+  --json > "$LOG_PLANNER" 2>"$LOG_PLANNER.err" || PLANNER_EXIT=$?
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session Planner finished (exit=$PLANNER_EXIT)"
 
-if [ "$STATE_EVAL_EXIT" -ne 0 ]; then
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] State Evaluator failed — skipping Actor and Action Evaluator"
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
+if [ "$PLANNER_EXIT" -ne 0 ]; then
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session Planner failed — skipping Actor and Verifier"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|planner_exit=$PLANNER_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
   exit 1
 fi
 
@@ -49,33 +49,31 @@ fi
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor"
 ACTOR_EXIT=0
 timeout "${TIMEOUT:-35}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/AGENT_PROMPT.md")$METRICS_BLOCK" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/ACTOR_PROMPT.md")$METRICS_BLOCK" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_ACTOR" 2>"$LOG_ACTOR.err" || ACTOR_EXIT=$?
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor finished (exit=$ACTOR_EXIT)"
 
 if [ "$ACTOR_EXIT" -ne 0 ]; then
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor failed — skipping Action Evaluator"
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor failed — skipping Verifier"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|planner_exit=$PLANNER_EXIT|actor_exit=$ACTOR_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
   exit 1
 fi
 
-# --- Step 3: Action Evaluator ---
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Action Evaluator"
-ACTION_EVAL_EXIT=0
-source ~/.secrets/openai
-ACTION_EVAL_PROMPT="$(cat "$SCRIPT_DIR/EVAL_ACTION_PROMPT.md")$METRICS_BLOCK
+# --- Step 3: Deterministic Verifier ---
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Deterministic Verifier"
+VERIFY_EXIT=0
+timeout "${VERIFY_TIMEOUT:-15}m" bash "$SCRIPT_DIR/verify.sh" "$PROJECT_DIR/alife" \
+  > "$LOG_VERIFY" 2>"$LOG_VERIFY.err" || VERIFY_EXIT=$?
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Deterministic Verifier finished (exit=$VERIFY_EXIT)"
 
-The actor session log is at: $LOG_ACTOR"
-timeout "${ACTION_EVAL_TIMEOUT:-30}m" codex exec \
-  "$ACTION_EVAL_PROMPT" \
-  --dangerously-bypass-approvals-and-sandbox \
-  --cd "$PROJECT_DIR/alife" \
-  --json > "$LOG_ACTION_EVAL" 2>"$LOG_ACTION_EVAL.err" || ACTION_EVAL_EXIT=$?
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Action Evaluator finished (exit=$ACTION_EVAL_EXIT)"
+if [ "$VERIFY_EXIT" -ne 0 ]; then
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|aborted|planner_exit=$PLANNER_EXIT|actor_exit=$ACTOR_EXIT|verify_exit=$VERIFY_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
+  exit 1
+fi
 
-echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|finished|state_exit=$STATE_EVAL_EXIT|actor_exit=$ACTOR_EXIT|action_exit=$ACTION_EVAL_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|finished|planner_exit=$PLANNER_EXIT|actor_exit=$ACTOR_EXIT|verify_exit=$VERIFY_EXIT|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
 # Auto-cleanup: keep only last 30 days of logs
 find "$LOGDIR" -name "*.log" -mtime +30 -delete 2>/dev/null || true

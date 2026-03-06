@@ -9,9 +9,9 @@ A Codex CLI-driven pipeline that autonomously develops an artificial life simula
 ```
 cron (daily 03:00 UTC)
   └─ orchestrator/run.sh
-       ├─ State Evaluator   — analyzes project state + external trends
+       ├─ Session Planner    — analyzes state + external trends, then picks one bounded bet
        ├─ Actor              — implements features, runs tests, pushes code
-       └─ Action Evaluator   — reviews session output and provides feedback
+       └─ Deterministic Verifier — runs tests/build/docs/git checks
 ```
 
 - **Orchestrator** (`orchestrator/`): Session management, prompts, and pipeline scripts.
@@ -41,8 +41,21 @@ The Actor is given a broad mission ("build a living world") and decides its own 
 
 - Emergent behavior cannot be planned top-down.
 - Constraining direction would narrow the space of possible discoveries.
-- The Evaluators provide feedback but do not gate or veto development.
+- The planner guides direction, but does not dictate implementation details.
 - The experiment is as much about the autonomous development process as it is about the simulation itself.
+
+### Bounded autonomy over sprawling sessions
+
+Recent agent-evals work suggests that current frontier agents are far more
+reliable on bounded, verifiable slices of work than on messy, ambiguous,
+long-horizon projects. This pipeline therefore separates:
+
+- **Session planning**: understand the project and external context, then choose one bounded, high-leverage bet with clear stop conditions
+- **Execution**: implement only that slice
+- **Deterministic verification**: fail fast on broken builds, failing tests, missing docs, or uncommitted tracked changes
+
+The intent is not to reduce autonomy, but to keep each daily run inside a task
+horizon the agent can realistically finish without a human in the loop.
 
 ## Setup
 

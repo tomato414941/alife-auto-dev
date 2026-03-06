@@ -1,3 +1,3 @@
-STATE_EVAL_TIMEOUT=30     # minutes (includes web search)
+PLANNER_TIMEOUT=30        # minutes (includes project review + web research)
 TIMEOUT=35                # minutes (actor)
-ACTION_EVAL_TIMEOUT=30    # minutes (reads full actor log)
+VERIFY_TIMEOUT=15         # minutes (tests, build, git/doc checks)
