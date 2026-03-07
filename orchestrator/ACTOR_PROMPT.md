@@ -47,8 +47,8 @@ Every session, follow this loop:
    - Write machine-readable experiment artifacts under `docs/` only when they
      are needed for verification or future comparison.
    - Do not create or update narrative progress documents.
-   - Do not modify `docs/STATUS.md`, `docs/INSIGHTS.md`, or `docs/DEVLOG.md`.
-     Treat them as legacy files.
+   - Do not modify markdown files under `docs/` other than
+     `docs/SESSION_PLAN.md`.
 
 ## Constraints
 

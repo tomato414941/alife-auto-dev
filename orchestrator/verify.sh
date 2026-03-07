@@ -69,12 +69,16 @@ run_package_script "$PACKAGE_MANAGER" build
 require_file "docs/SESSION_PLAN.md"
 
 if [ -n "$BASE_REV" ] && git rev-parse --verify "$BASE_REV^{commit}" >/dev/null 2>&1; then
-  LEGACY_DOC_CHANGES="$(git diff --name-only "$BASE_REV..HEAD" -- docs/STATUS.md docs/DEVLOG.md docs/INSIGHTS.md)"
-  if [ -n "$LEGACY_DOC_CHANGES" ]; then
-    echo "$LEGACY_DOC_CHANGES" >&2
-    fail "legacy narrative docs were modified during actor run"
+  UNEXPECTED_DOC_MARKDOWN_CHANGES="$(
+    git diff --name-only "$BASE_REV..HEAD" -- docs |
+      grep '^docs/.*\.md$' |
+      grep -v '^docs/SESSION_PLAN\.md$' || true
+  )"
+  if [ -n "$UNEXPECTED_DOC_MARKDOWN_CHANGES" ]; then
+    echo "$UNEXPECTED_DOC_MARKDOWN_CHANGES" >&2
+    fail "unexpected docs markdown outside SESSION_PLAN.md was modified during actor run"
   fi
-  note "legacy narrative docs unchanged since $BASE_REV"
+  note "non-session-plan docs markdown unchanged since $BASE_REV"
 fi
 
 TRACKED_STATUS="$(git status --short --untracked-files=no)"

@@ -52,8 +52,8 @@ likely finish autonomously in one session.
   experiments, or explicit measurable outputs.
 - Prefer evidence from code, tests, git history, and machine-readable artifacts
   over narrative progress documents.
-- Treat `docs/STATUS.md`, `docs/INSIGHTS.md`, and `docs/DEVLOG.md` as legacy
-  files. Do not rely on them when forming the session bet.
+- Use `docs/SESSION_PLAN.md` and machine-readable artifacts under `docs/` when
+  documentation is needed for the session bet.
 - Prefer bets that clarify or improve open-endedness over narrow local
   optimization.
 - Explicitly state the strongest current anti-evidence against claiming
@@ -128,3 +128,5 @@ Write exactly this structure:
 - Do not tell the actor to do multiple unrelated things.
 - Do not pick a bet whose success depends on hidden human context.
 - Be specific with source names or URLs in `External Context`.
+- Do not read from or cite markdown files under `docs/` other than
+  `docs/SESSION_PLAN.md`.

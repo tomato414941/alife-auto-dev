@@ -10,11 +10,10 @@
 #   Tool Usage Patterns (25%):
 #     3. Tool Selection          (0.15) — detects tool usage drift
 #     4. Tool Sequencing         (0.10) — detects workflow pattern drift
-#   Inter-Agent Coordination (25%):
-#     5. DEVLOG Progression      (0.15) — detects documentation drift
-#     6. Session Reliability     (0.10) — detects infra issues
+#   Execution Reliability (10%):
+#     5. Session Reliability     (0.10) — detects infra issues
 #   Behavioral Boundaries (25%):
-#     7. Research Progression    (0.25) — detects stagnation
+#     6. Research Progression    (0.25) — detects stagnation
 #
 # Output: ASI metrics to stdout (for prompt injection)
 # Side effect: appends to asi_history.jsonl
