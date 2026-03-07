@@ -45,6 +45,8 @@ if [ "$PLANNER_EXIT" -ne 0 ]; then
   exit 1
 fi
 
+ACTOR_BASE_REV="$(git -C "$PROJECT_DIR/alife" rev-parse HEAD)"
+
 # --- Step 2: Actor ---
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor"
 ACTOR_EXIT=0
@@ -64,7 +66,7 @@ fi
 # --- Step 3: Deterministic Verifier ---
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Deterministic Verifier"
 VERIFY_EXIT=0
-timeout "${VERIFY_TIMEOUT:-15}m" bash "$SCRIPT_DIR/verify.sh" "$PROJECT_DIR/alife" \
+timeout "${VERIFY_TIMEOUT:-15}m" bash "$SCRIPT_DIR/verify.sh" "$PROJECT_DIR/alife" "$ACTOR_BASE_REV" \
   > "$LOG_VERIFY" 2>"$LOG_VERIFY.err" || VERIFY_EXIT=$?
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Deterministic Verifier finished (exit=$VERIFY_EXIT)"
 

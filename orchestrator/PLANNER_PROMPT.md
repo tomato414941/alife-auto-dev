@@ -31,12 +31,13 @@ likely finish autonomously in one session.
 
 ## Read
 
-1. `docs/STATUS.md` if it exists
-2. `docs/INSIGHTS.md` if it exists
-3. Tail of `docs/DEVLOG.md` if it exists
-4. `git log --oneline -20`
-5. Skim `src/` and `test/` only enough to understand the current leverage points
-6. Search the web when needed for recent developments in artificial life,
+1. `git log --oneline -20`
+2. `docs/SESSION_PLAN.md` if it exists, only to understand the previous bounded
+   bet and any referenced artifacts
+3. Skim `src/` and `test/` only enough to understand the current leverage points
+4. Inspect recent experiment artifacts under `docs/` when they materially affect
+   the session bet
+5. Search the web when needed for recent developments in artificial life,
    agent-based modeling, or evolutionary simulation that materially affect the
    session bet.
 
@@ -49,8 +50,14 @@ likely finish autonomously in one session.
   is missing, and what recent external work matters.
 - Prefer work with algorithmic verification: tests, builds, deterministic
   experiments, or explicit measurable outputs.
+- Prefer evidence from code, tests, git history, and machine-readable artifacts
+  over narrative progress documents.
+- Treat `docs/STATUS.md`, `docs/INSIGHTS.md`, and `docs/DEVLOG.md` as legacy
+  files. Do not rely on them when forming the session bet.
 - Prefer bets that clarify or improve open-endedness over narrow local
   optimization.
+- Explicitly state the strongest current anti-evidence against claiming
+  open-endedness.
 - Generate 2-3 candidate bets before selecting one.
 - Prefer bets that increase knowledge or capability, not just code surface area.
 - If the best-looking task is too large, ambiguous, or dependent on missing
@@ -80,6 +87,10 @@ Write exactly this structure:
 ## Research Gaps
 - {1 testable question grounded in the current project and recent literature}
 - {optional additional question if it materially changes the session bet}
+
+## Current Anti-Evidence
+- {strongest current reason the system cannot yet be claimed to exhibit open-endedness}
+- {optional second reason only if materially different}
 
 ## Candidate Bets
 - A: {one sentence}

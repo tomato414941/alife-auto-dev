@@ -294,43 +294,7 @@ calc_tool_sequence_consistency() {
   }'
 }
 
-# --- 5. DEVLOG Progression ---
-# Ratio of documented sessions to total finished sessions.
-# 1.0 = every session is documented in DEVLOG.md
-calc_devlog_progression() {
-  local devlog="$GIT_REPO/docs/DEVLOG.md"
-  if [ ! -f "$devlog" ]; then
-    echo "null"
-    return
-  fi
-
-  local sessions
-  sessions=$(finished_sessions)
-  if [ -z "$sessions" ]; then
-    echo "null"
-    return
-  fi
-
-  local total_sessions
-  total_sessions=$(echo "$sessions" | wc -l)
-  if [ "$total_sessions" -lt 1 ]; then
-    echo "null"
-    return
-  fi
-
-  # Count session headers in DEVLOG (## YYYY-MM-DD (session N))
-  local devlog_entries
-  devlog_entries=$(grep -cE '^## [0-9]{4}-[0-9]{2}-[0-9]{2}' "$devlog" 2>/dev/null || echo "0")
-
-  # Ratio capped at 1.0
-  awk -v d="$devlog_entries" -v t="$total_sessions" 'BEGIN {
-    ratio = d / t
-    if (ratio > 1) ratio = 1
-    printf "%.3f\n", ratio
-  }'
-}
-
-# --- 6. Session Reliability ---
+# --- 5. Session Reliability ---
 # finished / (finished + aborted) over last N sessions
 calc_session_reliability() {
   local data
@@ -352,7 +316,7 @@ calc_session_reliability() {
   }'
 }
 
-# --- 7. Research Progression ---
+# --- 6. Research Progression ---
 # Ratio of feat/fix commits (recent half) vs (older half).
 # Measures whether the agent continues producing meaningful research output.
 calc_research_progression() {
@@ -398,14 +362,13 @@ D_GIT_COMMIT=$(calc_git_commit_consistency)
 D_CONSISTENCY=$(calc_output_consistency)
 D_TOOL_SELECT=$(calc_tool_selection_stability)
 D_TOOL_SEQ=$(calc_tool_sequence_consistency)
-D_DEVLOG=$(calc_devlog_progression)
 D_RELIABILITY=$(calc_session_reliability)
 D_RESEARCH=$(calc_research_progression)
 
 # --- Compute composite ASI ---
 ASI=$(awk -v gc="$D_GIT_COMMIT" -v o="$D_CONSISTENCY" \
          -v ts="$D_TOOL_SELECT" -v tq="$D_TOOL_SEQ" \
-         -v dl="$D_DEVLOG" -v r="$D_RELIABILITY" \
+         -v r="$D_RELIABILITY" \
          -v rp="$D_RESEARCH" '
 BEGIN {
   dims = 0; weighted = 0; total_weight = 0
@@ -413,7 +376,6 @@ BEGIN {
   if (o != "null")  { weighted += 0.10 * o;  total_weight += 0.10; dims++ }
   if (ts != "null") { weighted += 0.15 * ts; total_weight += 0.15; dims++ }
   if (tq != "null") { weighted += 0.10 * tq; total_weight += 0.10; dims++ }
-  if (dl != "null") { weighted += 0.15 * dl; total_weight += 0.15; dims++ }
   if (r != "null")  { weighted += 0.10 * r;  total_weight += 0.10; dims++ }
   if (rp != "null") { weighted += 0.25 * rp; total_weight += 0.25; dims++ }
 
@@ -444,8 +406,7 @@ agent_stability_index:
   tool_usage_patterns:
     tool_selection_stability: $D_TOOL_SELECT
     tool_sequence_consistency: $D_TOOL_SEQ
-  inter_agent_coordination:
-    devlog_progression: $D_DEVLOG
+  execution_reliability:
     session_reliability: $D_RELIABILITY
   behavioral_boundaries:
     research_progression: $D_RESEARCH
@@ -455,5 +416,5 @@ EOF
 # --- Append to history ---
 NULL_SAFE() { if [ "$1" = "null" ]; then echo "null"; else echo "$1"; fi; }
 cat >> "$ASI_HISTORY" <<HIST
-{"timestamp":"$TIMESTAMP","asi":$(NULL_SAFE "$ASI"),"alert":"$ALERT","git_commit_consistency":$(NULL_SAFE "$D_GIT_COMMIT"),"output_consistency":$(NULL_SAFE "$D_CONSISTENCY"),"tool_selection_stability":$(NULL_SAFE "$D_TOOL_SELECT"),"tool_sequence_consistency":$(NULL_SAFE "$D_TOOL_SEQ"),"devlog_progression":$(NULL_SAFE "$D_DEVLOG"),"session_reliability":$(NULL_SAFE "$D_RELIABILITY"),"research_progression":$(NULL_SAFE "$D_RESEARCH"),"window":$WINDOW}
+{"timestamp":"$TIMESTAMP","asi":$(NULL_SAFE "$ASI"),"alert":"$ALERT","git_commit_consistency":$(NULL_SAFE "$D_GIT_COMMIT"),"output_consistency":$(NULL_SAFE "$D_CONSISTENCY"),"tool_selection_stability":$(NULL_SAFE "$D_TOOL_SELECT"),"tool_sequence_consistency":$(NULL_SAFE "$D_TOOL_SEQ"),"session_reliability":$(NULL_SAFE "$D_RELIABILITY"),"research_progression":$(NULL_SAFE "$D_RESEARCH"),"window":$WINDOW}
 HIST

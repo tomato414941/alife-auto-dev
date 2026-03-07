@@ -2,6 +2,7 @@
 set -euo pipefail
 
 TARGET_DIR="${1:-$(pwd)}"
+BASE_REV="${2:-}"
 cd "$TARGET_DIR"
 
 fail() {
@@ -65,10 +66,16 @@ run_package_script "$PACKAGE_MANAGER" test
 note "running build"
 run_package_script "$PACKAGE_MANAGER" build
 
-require_file "docs/STATUS.md"
-require_file "docs/DEVLOG.md"
-require_file "docs/INSIGHTS.md"
 require_file "docs/SESSION_PLAN.md"
+
+if [ -n "$BASE_REV" ] && git rev-parse --verify "$BASE_REV^{commit}" >/dev/null 2>&1; then
+  LEGACY_DOC_CHANGES="$(git diff --name-only "$BASE_REV..HEAD" -- docs/STATUS.md docs/DEVLOG.md docs/INSIGHTS.md)"
+  if [ -n "$LEGACY_DOC_CHANGES" ]; then
+    echo "$LEGACY_DOC_CHANGES" >&2
+    fail "legacy narrative docs were modified during actor run"
+  fi
+  note "legacy narrative docs unchanged since $BASE_REV"
+fi
 
 TRACKED_STATUS="$(git status --short --untracked-files=no)"
 if [ -n "$TRACKED_STATUS" ]; then

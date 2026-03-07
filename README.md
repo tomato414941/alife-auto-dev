@@ -11,7 +11,7 @@ cron (daily 03:00 UTC)
   └─ orchestrator/run.sh
        ├─ Session Planner    — analyzes state + external trends, then picks one bounded bet
        ├─ Actor              — implements features, runs tests, pushes code
-       └─ Deterministic Verifier — runs tests/build/docs/git checks
+       └─ Deterministic Verifier — runs tests/build/session-plan/git checks
 ```
 
 - **Orchestrator** (`orchestrator/`): Session management, prompts, and pipeline scripts.
@@ -52,7 +52,7 @@ long-horizon projects. This pipeline therefore separates:
 
 - **Session planning**: understand the project and external context, then choose one bounded, high-leverage bet with clear stop conditions
 - **Execution**: implement only that slice
-- **Deterministic verification**: fail fast on broken builds, failing tests, missing docs, or uncommitted tracked changes
+- **Deterministic verification**: fail fast on broken builds, failing tests, missing session plan, or uncommitted tracked changes
 
 The intent is not to reduce autonomy, but to keep each daily run inside a task
 horizon the agent can realistically finish without a human in the loop.
