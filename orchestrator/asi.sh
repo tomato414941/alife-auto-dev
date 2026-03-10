@@ -1,7 +1,8 @@
 #!/bin/bash
 # ASI (Agent Stability Index) — alife-auto-dev edition
 # Computes behavioral drift metrics from session history.
-# Based on: arxiv.org/abs/2601.04170 (Agent Drift, Rath 2026)
+# Inspired by: arxiv.org/abs/2601.04170 (Agent Drift, Rath 2026)
+# Heavily adapted for single-agent autonomous research use case.
 #
 # 6 dimensions — research-first weighting:
 #   Research Output (53%):
