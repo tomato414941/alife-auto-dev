@@ -3,17 +3,22 @@
 # Computes behavioral drift metrics from session history.
 # Based on: arxiv.org/abs/2601.04170 (Agent Drift, Rath 2026)
 #
-# 7 dimensions (mapped to paper's 4 categories):
-#   Response Consistency (25%):
-#     1. Git Commit Consistency  (0.15) — detects erratic output
-#     2. Output Consistency      (0.10) — detects behavioral instability
-#   Tool Usage Patterns (25%):
-#     3. Tool Selection          (0.15) — detects tool usage drift
-#     4. Tool Sequencing         (0.10) — detects workflow pattern drift
-#   Execution Reliability (10%):
-#     5. Session Reliability     (0.10) — detects infra issues
-#   Behavioral Boundaries (25%):
-#     6. Research Progression    (0.25) — detects stagnation
+# 6 dimensions — research-first weighting:
+#   Research Output (53%):
+#     1. Research Progression    (0.45) — primary: detects stagnation
+#   Execution Reliability (24%):
+#     2. Session Reliability     (0.20) — infra health: sessions complete
+#   Behavioral Drift Guard (24% total, low individual weight):
+#     3. Git Commit Consistency  (0.05) — anomaly guard: erratic output
+#     4. Output Consistency      (0.05) — anomaly guard: size instability
+#     5. Tool Selection          (0.05) — anomaly guard: tool usage drift
+#     6. Tool Sequencing         (0.05) — anomaly guard: workflow drift
+#
+# Design note: stability metrics are kept at low weight because this
+# project's Actor tackles different research tasks each session. Healthy
+# diversity in tool usage and output size is expected and should not
+# penalize the composite score. These metrics serve as early warnings
+# for catastrophic drift (e.g. agent stuck in a loop), not as goals.
 #
 # Output: ASI metrics to stdout (for prompt injection)
 # Side effect: appends to asi_history.jsonl
@@ -371,12 +376,12 @@ ASI=$(awk -v gc="$D_GIT_COMMIT" -v o="$D_CONSISTENCY" \
          -v rp="$D_RESEARCH" '
 BEGIN {
   dims = 0; weighted = 0; total_weight = 0
-  if (gc != "null") { weighted += 0.15 * gc; total_weight += 0.15; dims++ }
-  if (o != "null")  { weighted += 0.10 * o;  total_weight += 0.10; dims++ }
-  if (ts != "null") { weighted += 0.15 * ts; total_weight += 0.15; dims++ }
-  if (tq != "null") { weighted += 0.10 * tq; total_weight += 0.10; dims++ }
-  if (r != "null")  { weighted += 0.10 * r;  total_weight += 0.10; dims++ }
-  if (rp != "null") { weighted += 0.25 * rp; total_weight += 0.25; dims++ }
+  if (gc != "null") { weighted += 0.05 * gc; total_weight += 0.05; dims++ }
+  if (o != "null")  { weighted += 0.05 * o;  total_weight += 0.05; dims++ }
+  if (ts != "null") { weighted += 0.05 * ts; total_weight += 0.05; dims++ }
+  if (tq != "null") { weighted += 0.05 * tq; total_weight += 0.05; dims++ }
+  if (r != "null")  { weighted += 0.20 * r;  total_weight += 0.20; dims++ }
+  if (rp != "null") { weighted += 0.45 * rp; total_weight += 0.45; dims++ }
 
   if (dims == 0 || total_weight == 0) { print "null"; exit }
   printf "%.3f\n", weighted / total_weight
