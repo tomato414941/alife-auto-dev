@@ -16,24 +16,11 @@ LOG_VERIFY="$LOGDIR/${LOG_BASENAME}_verify.log"
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
-# --- Phase 0: ASI (Agent Stability Index) ---
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Computing ASI metrics"
-ASI_EXIT=0
-ASI_METRICS=$(bash "$SCRIPT_DIR/asi.sh") || ASI_EXIT=$?
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] ASI computation finished (exit=$ASI_EXIT)"
-
-METRICS_BLOCK=""
-if [ "$ASI_EXIT" -eq 0 ] && [ -n "$ASI_METRICS" ]; then
-  METRICS_BLOCK="
-## Current Metrics (deterministic)
-$ASI_METRICS"
-fi
-
 # --- Step 1: Session Planner ---
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Session Planner"
 PLANNER_EXIT=0
 timeout "${PLANNER_TIMEOUT:-30}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/PLANNER_PROMPT.md")$METRICS_BLOCK" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/PLANNER_PROMPT.md")" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_PLANNER" 2>"$LOG_PLANNER.err" || PLANNER_EXIT=$?
@@ -51,7 +38,7 @@ ACTOR_BASE_REV="$(git -C "$PROJECT_DIR/alife" rev-parse HEAD)"
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor"
 ACTOR_EXIT=0
 timeout "${TIMEOUT:-35}m" codex exec \
-  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/ACTOR_PROMPT.md")$METRICS_BLOCK" \
+  "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/ACTOR_PROMPT.md")" \
   --dangerously-bypass-approvals-and-sandbox \
   --cd "$PROJECT_DIR/alife" \
   --json > "$LOG_ACTOR" 2>"$LOG_ACTOR.err" || ACTOR_EXIT=$?
