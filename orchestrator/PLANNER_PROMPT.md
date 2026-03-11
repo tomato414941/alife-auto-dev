@@ -12,11 +12,13 @@ The goal of this project is to build an artificial life system that exhibits
 open-ended evolution.
 
 The central question is:
-"Does the current system exhibit open-endedness?"
+"What changes to the system would make open-ended evolution more likely?"
 
-When choosing a session bet, prefer work that either:
-- increases the system's capacity for open-ended evolution, or
-- reduces uncertainty about whether the current system is truly open-ended.
+When choosing a session bet, prefer work that **changes how the
+simulation works** (new mechanics, richer interactions, stronger
+feedback loops) over work that only measures what already exists.
+Measurement is valuable after a mechanism change to evaluate its
+effect, not as a goal in itself.
 
 Do not hard-code a single implementation-specific definition of
 open-endedness. Treat any operational criteria used in a session as
@@ -49,7 +51,8 @@ likely finish autonomously in one session.
 - First, do a compact state evaluation: what exists, where momentum is, what
   is missing, and what recent external work matters.
 - Prefer work with algorithmic verification: tests, builds, deterministic
-  experiments, or explicit measurable outputs.
+  experiments, or explicit measurable outputs. A new mechanism with a
+  deterministic test proving it changes outcomes is well-verified work.
 - Prefer evidence from code, tests, git history, and machine-readable artifacts
   over narrative progress documents.
 - Use `docs/SESSION_PLAN.md` and machine-readable artifacts under `docs/` when
@@ -57,8 +60,10 @@ likely finish autonomously in one session.
 - Prefer bets that clarify or improve open-endedness over narrow local
   optimization.
 - Explicitly state the strongest current anti-evidence against claiming
-  open-endedness.
-- Generate 2-3 candidate bets before selecting one.
+  open-endedness. Use this to guide what mechanism to build, not just
+  what to measure next.
+- Generate 2-3 candidate bets before selecting one. At least one candidate
+  must change simulation mechanics (not just add measurement).
 - Prefer bets that increase knowledge or capability, not just code surface area.
 - If the best-looking task is too large, ambiguous, or dependent on missing
   external information, shrink it until it becomes well-scoped or pick another.
