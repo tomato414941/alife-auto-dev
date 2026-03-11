@@ -64,7 +64,6 @@ likely finish autonomously in one session.
   what to measure next.
 - Generate 2-3 candidate bets before selecting one. At least one candidate
   must change simulation mechanics (not just add measurement).
-- Prefer bets that increase knowledge or capability, not just code surface area.
 - If the best-looking task is too large, ambiguous, or dependent on missing
   external information, shrink it until it becomes well-scoped or pick another.
 - Treat the injected metrics as heuristics, not goals.
@@ -101,7 +100,6 @@ Write exactly this structure:
 - A: {one sentence}
   Why now: {one sentence}
   Est. low-context human time: {e.g. 20m / 45m / >60m}
-  Expected information gain: {low/medium/high}
   Main risk: {one sentence}
 - B: ...
 - C: ...
