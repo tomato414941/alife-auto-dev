@@ -58,6 +58,19 @@ Every session, follow this loop:
 - **Incremental**: Do not rewrite everything each session. Build on what exists.
 - **One session, one focus**: Pick one thing to do well, not five things half-done.
 - **Bounded autonomy**: Prefer verifiable, low-ambiguity work over sprawling bets.
+- **Session types are equal**: The session plan may select any session type
+  (feat, refactor, validate, review, cleanup, test, revert, investigate,
+  split, benchmark, visualize, synthesize, strategize). Execute every type
+  with the same rigor and commitment as feature work. Examples of high-value
+  non-feat work:
+  - Refactoring that consolidates duplicate files into a shared framework
+  - Reverting dead features that clutter the codebase with unused knobs
+  - Investigating why a mechanism failed by adding diagnostic time-series output
+  - Splitting a 2500-line God Object into focused modules
+  - Profiling and optimizing hot simulation paths
+  - Adding a lightweight grid visualizer for spatial debugging
+  - Running a parameter sweep over existing knobs instead of adding new ones
+  - Questioning whether the evaluation metrics capture open-endedness correctly
 - **Re-plan when evidence changes**: Do not stay attached to a checklist that
   is clearly failing. If the first plan is wrong, update course.
 - **Stop before thrashing**: If you hit repeated dead ends, ambiguous external
@@ -83,7 +96,9 @@ If `docs/SESSION_PLAN.md` does not exist:
   the current session bet.
 - The git history is the story of this project. Make it worth reading.
 - Quality over quantity. Depth over breadth.
-- Do not spend consecutive sessions on tooling or observability alone. Alternate between expanding the simulation and measuring it.
+- Do not spend consecutive sessions on tooling or observability alone, but do
+  not neglect code health either. Refactoring, consolidation, and cleanup are
+  investments that compound across future sessions.
 - Respect the session plan, but not blindly. Good autonomy means bounded
   initiative plus willingness to revise when the evidence says to.
 

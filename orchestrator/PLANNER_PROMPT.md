@@ -34,14 +34,21 @@ likely finish autonomously in one session.
 ## Read
 
 1. `git log --oneline -20`
-2. `docs/SESSION_PLAN.md` if it exists, only to understand the previous bounded
+2. Classify each recent commit into an **exploration axis** based on what
+   the commit actually changed. Derive axis names from the codebase, not from
+   a fixed list. Count how many of the last 10 commits fall on each axis.
+3. `docs/SESSION_PLAN.md` if it exists, only to understand the previous bounded
    bet and any referenced artifacts
-3. Skim `src/` and `test/` only enough to understand the current leverage points
-4. Inspect recent experiment artifacts under `docs/` when they materially affect
+4. Skim `src/` and `test/` to understand the current leverage points. Also
+   check for structural issues: files over 2000 lines, classes with too many
+   responsibilities, data structures that grow without bounds, algorithms with
+   poor scaling, narrow or rigid abstractions that limit the system's
+   expressiveness (e.g. fixed-dimension genomes, hard-coded interaction types)
+5. Inspect recent experiment artifacts under `docs/` when they materially affect
    the session bet
-5. Search the web when needed for recent developments in artificial life,
-   agent-based modeling, or evolutionary simulation that materially affect the
-   session bet.
+6. Search the web only if the selected axis is one you have not searched for
+   in recent sessions. Limit to 1 search query. Do not search if existing
+   `External Context` in the prior plan already covers the chosen axis.
 
 ## Planning rules
 
@@ -64,9 +71,63 @@ likely finish autonomously in one session.
   what to measure next.
 - Generate 2-3 candidate bets before selecting one. At least one candidate
   must change simulation mechanics (not just add measurement).
+- **Session type diversity**: Candidates are not limited to new features.
+  Valid session types include:
+  - `feat` — new mechanism or interaction
+  - `refactor` — consolidate duplicates, split large files, improve abstractions
+  - `validate` — run long-horizon benchmarks, reproduce past results, stress test
+  - `review` — analyze past experiment results for patterns, update strategy
+  - `cleanup` — remove dead code, unused artifacts, outdated study scripts
+  - `test` — improve coverage, find edge cases in existing code
+  - `revert` — remove failed experiment code (knobs that default to 0/-1 and
+    worsened metrics). Dead features increase cognitive load and code size
+  - `investigate` — diagnose WHY an experiment failed, not just that it failed.
+    Add step-level diagnostic output (population, births, deaths, spatial
+    entropy over time) to understand mechanism failures
+  - `split` — break apart God Objects. If a single file exceeds 2000 lines,
+    extract coherent modules (e.g. spatial logic, agent behavior, reproduction,
+    analytics)
+  - `benchmark` — profile simulation performance, identify bottlenecks, optimize
+    hot paths. Faster simulations enable faster feedback loops
+  - `visualize` — add lightweight output (HTML, SVG, or text grid snapshots)
+    that makes spatial patterns and dynamics human-readable
+  - `synthesize` — test combinations of existing knobs (grid search, parameter
+    sweep) rather than always adding new isolated mechanisms
+  - `strategize` — question whether the current evaluation metrics, experimental
+    methodology, or overall research direction are correct. Consider whether
+    the metrics actually capture the project goal or just a proxy for it
+  At least one candidate bet MUST be a non-feat type. Label each candidate
+  with its session type.
+- **Code health triggers**: Check for these conditions and, when present,
+  strongly prefer a refactor, cleanup, split, or revert candidate:
+  - Any `src/` file exceeds 2000 lines → split
+  - 5 or more files share near-identical structure → refactor
+  - Test coverage for a recently added mechanism is missing → test
+  - Config knobs that default to 0 or -1 and have only negative experiment
+    results → revert
+- **Validation trigger**: If 5 or more feat sessions have passed since the
+  last validate session, at least one candidate MUST be a validate bet
+  (e.g. run the project's canonical long-horizon benchmark).
+- **Investigation trigger**: If 3 or more consecutive feat experiments
+  worsened the target metric, at least one candidate MUST be an investigate
+  or strategize bet. Blindly trying new knobs without understanding failures
+  is wasteful.
+- **Revert trigger**: If 5 or more config knobs exist with default 0/-1 and
+  no positive experiment results, at least one candidate MUST be a revert bet.
+- **Diversity rule**: If any single exploration axis accounts for 3 or more of
+  the last 5 commits, at least one candidate bet MUST target a different axis.
+  If it accounts for 5 of the last 5, the selected bet MUST target a different
+  axis. This prevents drift into narrow local optimization.
+- When generating candidates, actively consider underexplored axes. Derive
+  these from the codebase and experiment history, not from a fixed list.
+  Also consider entirely new interaction types not yet in the system.
 - If the best-looking task is too large, ambiguous, or dependent on missing
   external information, shrink it until it becomes well-scoped or pick another.
 - Treat the injected metrics as heuristics, not goals.
+- **Time budget**: Your primary deliverable is `docs/SESSION_PLAN.md`. Spend at
+  most 50% of your time on reading and research. If you have not started writing
+  the plan after reading git log, the prior plan, and skimming code, write it
+  now — you can always refine later. An imperfect plan is better than no plan.
 - Do not commit or push.
 
 ## Write `docs/SESSION_PLAN.md`
@@ -78,6 +139,14 @@ Write exactly this structure:
 
 ## Compact Context
 - {4-6 bullets of stable facts the actor should remember}
+
+## Exploration Axes (last 10 commits)
+| Axis | Count | Last seen |
+|------|-------|-----------|
+| {axis name} | {N} | {commit hash} |
+
+Dominant axis: {name} ({N}/10)
+Underexplored axes: {list of axes with 0-1 commits}
 
 ## Project State
 - {what exists now}
@@ -97,12 +166,12 @@ Write exactly this structure:
 - {optional second reason only if materially different}
 
 ## Candidate Bets
-- A: {one sentence}
+- A: [{session type}] {one sentence}
   Why now: {one sentence}
   Est. low-context human time: {e.g. 20m / 45m / >60m}
   Main risk: {one sentence}
-- B: ...
-- C: ...
+- B: [{session type}] ...
+- C: [{session type}] ...
 
 ## Selected Bet
 {one short paragraph}
