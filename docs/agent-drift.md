@@ -42,6 +42,26 @@ in the literature:
 | Failure cost        | git reset (instant)       | Dead code remains         |
 | Scope               | 1 file (train.py)         | Full codebase             |
 
+### Karpathy's AgentHub (2026-03-10)
+
+Karpathy's next step beyond autoresearch: GitHub is not suited for agent swarms.
+
+> "Git(Hub) has a built-in assumption of one 'master' branch which temporarily forks off into PRs just to merge back. The original repo should be more of a seed from which could sprout commits contributed by agents on all kinds of different research directions."
+
+| GitHub | AgentHub |
+|---|---|
+| main branch is canonical | No main branch |
+| PR → review → merge | No PRs, no merges |
+| Linear history convergence | DAG sprawling in every direction |
+| Human gatekeeper | Agents push autonomously |
+| Code review for quality | Message board for coordination |
+
+Architecture: bare git repo, agents push via git bundles, DAG tracks children/leaves/lineage, message board for async coordination, single Go binary + SQLite.
+
+Status: work in progress ("Just a sketch. Thinking...")
+
+- Source: https://github.com/karpathy/agenthub
+
 ## Interventions Applied (2026-03-12)
 
 ### 1. Exploration Axis Tracking (Planner prompt)
