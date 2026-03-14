@@ -87,35 +87,15 @@ likely finish autonomously in one session.
 - Explicitly state the strongest current anti-evidence against claiming
   open-endedness. Use this to guide what mechanism to build, not just
   what to measure next.
-- Generate 5-7 candidate bets. At least one candidate must change simulation
-  mechanics (not just add measurement). Select the top 3 for the Bet Queue.
-- **Session type diversity**: Candidates are not limited to new features.
-  Valid session types include:
-  - `feat` — new mechanism or interaction
-  - `refactor` — consolidate duplicates, split large files, improve abstractions
-  - `validate` — run long-horizon benchmarks, reproduce past results, stress test
-  - `review` — analyze past experiment results for patterns, update strategy
-  - `cleanup` — remove dead code, unused artifacts, outdated study scripts
-  - `test` — improve coverage, find edge cases in existing code
-  - `revert` — remove failed experiment code (knobs that default to 0/-1 and
-    worsened metrics). Dead features increase cognitive load and code size
-  - `investigate` — diagnose WHY an experiment failed, not just that it failed.
-    Add step-level diagnostic output (population, births, deaths, spatial
-    entropy over time) to understand mechanism failures
-  - `split` — break apart God Objects. If a single file exceeds 2000 lines,
-    extract coherent modules (e.g. spatial logic, agent behavior, reproduction,
-    analytics)
-  - `benchmark` — profile simulation performance, identify bottlenecks, optimize
-    hot paths. Faster simulations enable faster feedback loops
-  - `visualize` — add lightweight output (HTML, SVG, or text grid snapshots)
-    that makes spatial patterns and dynamics human-readable
-  - `synthesize` — test combinations of existing knobs (grid search, parameter
-    sweep) rather than always adding new isolated mechanisms
-  - `strategize` — question whether the current evaluation metrics, experimental
-    methodology, or overall research direction are correct. Consider whether
-    the metrics actually capture the project goal or just a proxy for it
-  At least one candidate bet MUST be a non-feat type. Label each candidate
-  with its session type.
+- **Backlog-driven selection**: The research agenda maintains a prioritized
+  backlog of TODO items. Each session, review the backlog: add new items based
+  on recent evidence, remove or deprioritize completed or invalidated items,
+  and select the top 3 for today's Bet Queue. Do not regenerate candidates
+  from scratch each session — build on the persistent backlog.
+- **Session type diversity**: Backlog items are not limited to new features.
+  Valid session types: `feat`, `refactor`, `validate`, `review`, `cleanup`,
+  `test`, `revert`, `investigate`, `split`, `benchmark`, `visualize`,
+  `synthesize`, `strategize`. Label each backlog item with its type.
 - **Code health triggers**: Check for these conditions and, when present,
   strongly prefer a refactor, cleanup, split, or revert candidate:
   - Any `src/` file exceeds 2000 lines → split
@@ -162,10 +142,14 @@ represents the current monthly research direction.
 ## Why This Direction
 {what evidence or reasoning supports this direction}
 
-## Milestones
-- [ ] {concrete milestone toward the goal}
-- [ ] {next milestone}
-- [x] {completed milestone}
+## Backlog
+{prioritized list of session-sized tasks. Each item has a type label.
+Top items are highest priority. Completed items are removed.
+Add new items when evidence suggests them. Re-prioritize based on results.}
+
+1. [{type}] {task description}
+2. [{type}] {task description}
+...
 
 ## Structural Constraints
 {what fundamental limitations in the current system could prevent progress,
@@ -175,11 +159,11 @@ identified from reading the codebase}
 - {date}: {what changed and why}
 ```
 
-Update the agenda when:
-- A milestone is completed
-- Evidence invalidates the current direction
-- Diminishing returns suggest a structural ceiling has been reached
-- You identify a structural constraint that the current direction cannot address
+Update the agenda every session:
+- Remove completed items from the backlog
+- Add new items based on recent evidence or structural observations
+- Re-prioritize based on results and diminishing returns
+- Revise the direction when a structural ceiling is reached
 
 ## Write `docs/SESSION_PLAN.md`
 
@@ -216,18 +200,8 @@ Underexplored axes: {list of axes with 0-1 commits}
 - {strongest current reason the system cannot yet be claimed to exhibit open-endedness}
 - {optional second reason only if materially different}
 
-## Candidate Bets
-- A: [{session type}] {one sentence}
-  Why now: {one sentence}
-  Est. low-context human time: {e.g. 20m / 45m}
-  Main risk: {one sentence}
-- B: [{session type}] ...
-- C: [{session type}] ...
-- D: [{session type}] ...
-- E: [{session type}] ...
-{5-7 candidates total}
-
 ## Bet Queue
+{top 3 items selected from the research agenda backlog}
 
 ### Bet 1: [{session type}] {title}
 {one short paragraph — what and why}
