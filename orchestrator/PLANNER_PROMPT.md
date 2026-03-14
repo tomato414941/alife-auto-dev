@@ -174,6 +174,9 @@ Update every session:
 - Remove completed items
 - Add new items based on recent evidence or structural observations
 - Select any 3 items for today's Bet Queue (no priority ordering needed)
+- Items labeled `[critic]` were added by the structural critic agent.
+  Do not remove them unless the underlying structural ceiling has been
+  addressed by a committed code change.
 
 ## Write `docs/SESSION_PLAN.md`
 

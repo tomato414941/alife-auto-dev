@@ -126,6 +126,30 @@ done
 # Cleanup
 rm -f "$ALIFE_DIR/docs/SESSION_BET.md"
 
+# --- Step 4 (optional): Critic ---
+FINISHED_COUNT=$(grep -c '|finished|' "$SESSIONS_LOG" 2>/dev/null || echo 0)
+CRITIC_INTERVAL="${CRITIC_INTERVAL:-5}"
+if [ $((FINISHED_COUNT % CRITIC_INTERVAL)) -eq 0 ] && [ "$FINISHED_COUNT" -gt 0 ]; then
+  LOG_CRITIC="$LOGDIR/${LOG_BASENAME}_critic.log"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Critic (every $CRITIC_INTERVAL sessions)"
+  CRITIC_EXIT=0
+  timeout "${CRITIC_TIMEOUT:-30}m" codex exec \
+    "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/CRITIC_PROMPT.md")" \
+    --dangerously-bypass-approvals-and-sandbox \
+    --cd "$ALIFE_DIR" \
+    --json > "$LOG_CRITIC" 2>"$LOG_CRITIC.err" || CRITIC_EXIT=$?
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic finished (exit=$CRITIC_EXIT)"
+  if [ "$CRITIC_EXIT" -eq 0 ]; then
+    if git -C "$ALIFE_DIR" diff --quiet docs/BACKLOG.md 2>/dev/null; then
+      echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic made no BACKLOG changes"
+    else
+      git -C "$ALIFE_DIR" add docs/BACKLOG.md
+      git -C "$ALIFE_DIR" commit -m "critic: add structural ceiling findings to backlog"
+      git -C "$ALIFE_DIR" push || echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic push failed (non-fatal)"
+    fi
+  fi
+fi
+
 # Log summary
 STATUS="finished"
 [ "$ACTORS_SUCCEEDED" -eq 0 ] && STATUS="all_failed"
