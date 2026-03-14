@@ -10,11 +10,10 @@ You also maintain `docs/RESEARCH_AGENDA.md` — a persistent monthly research
 direction that individual session bets serve. Your planning horizon is one
 month, not one session.
 
-The session runner will execute the top 3 bets sequentially, each handled
-by an independent actor. If an actor fails, its changes are reverted and
-the next bet proceeds. Order bets by priority. Each bet must be
-independently valuable — later bets must not depend on earlier bets
-succeeding.
+The session runner will execute 3 bets sequentially, each handled by an
+independent actor. If an actor fails, its changes are reverted and the
+next bet proceeds. Each bet must be independently valuable — later bets
+must not depend on earlier bets succeeding.
 
 ## Project Goal
 
@@ -89,11 +88,12 @@ likely finish autonomously in one session.
 - Explicitly state the strongest current anti-evidence against claiming
   open-endedness. Use this to guide what mechanism to build, not just
   what to measure next.
-- **Backlog-driven selection**: The research agenda maintains a prioritized
-  backlog of TODO items. Each session, review the backlog: add new items based
-  on recent evidence, remove or deprioritize completed or invalidated items,
-  and select the top 3 for today's Bet Queue. Do not regenerate candidates
-  from scratch each session — build on the persistent backlog.
+- **Backlog-driven selection**: The research agenda maintains a backlog of
+  TODO items. Each session, review the backlog: add new items based on recent
+  evidence, remove completed or invalidated items, and select 3 for today's
+  Bet Queue. The backlog is a flat list — no priority ordering needed.
+  Do not regenerate candidates from scratch each session — build on the
+  persistent backlog.
 - **Session type diversity**: Backlog items are not limited to new features.
   Valid session types: `feat`, `refactor`, `validate`, `review`, `cleanup`,
   `test`, `revert`, `investigate`, `split`, `benchmark`, `visualize`,
@@ -165,16 +165,15 @@ session-sized tasks that serve the research agenda.
 ```md
 # Backlog
 
-1. [{type}] {task description}
-2. [{type}] {task description}
+- [{type}] {task description}
+- [{type}] {task description}
 ...
 ```
 
 Update every session:
 - Remove completed items
 - Add new items based on recent evidence or structural observations
-- Re-prioritize based on results and diminishing returns
-- The top 3 items become this session's Bet Queue
+- Select any 3 items for today's Bet Queue (no priority ordering needed)
 
 ## Write `docs/SESSION_PLAN.md`
 
@@ -212,7 +211,7 @@ Underexplored axes: {list of axes with 0-1 commits}
 - {optional second reason only if materially different}
 
 ## Bet Queue
-{top 3 items from docs/BACKLOG.md}
+{3 items selected from docs/BACKLOG.md}
 
 ### Bet 1: [{session type}] {title}
 {one short paragraph — what and why}
