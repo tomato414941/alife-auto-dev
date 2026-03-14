@@ -43,7 +43,7 @@ likely finish autonomously in one session.
    check for structural issues: files over 2000 lines, classes with too many
    responsibilities, data structures that grow without bounds, algorithms with
    poor scaling, narrow or rigid abstractions that limit the system's
-   expressiveness (e.g. fixed-dimension genomes, hard-coded interaction types)
+   expressiveness
 5. Inspect recent experiment artifacts under `docs/` when they materially affect
    the session bet
 6. Search the web only if the selected axis is one you have not searched for
