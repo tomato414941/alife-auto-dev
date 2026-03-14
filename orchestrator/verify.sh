@@ -72,7 +72,8 @@ if [ -n "$BASE_REV" ] && git rev-parse --verify "$BASE_REV^{commit}" >/dev/null 
   UNEXPECTED_DOC_MARKDOWN_CHANGES="$(
     git diff --name-only "$BASE_REV..HEAD" -- docs |
       grep '^docs/.*\.md$' |
-      grep -v '^docs/SESSION_PLAN\.md$' || true
+      grep -v '^docs/SESSION_PLAN\.md$' |
+      grep -v '^docs/SESSION_BET\.md$' || true
   )"
   if [ -n "$UNEXPECTED_DOC_MARKDOWN_CHANGES" ]; then
     echo "$UNEXPECTED_DOC_MARKDOWN_CHANGES" >&2
@@ -88,15 +89,19 @@ if [ -n "$TRACKED_STATUS" ]; then
 fi
 note "tracked files are clean"
 
-UPSTREAM="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || true)"
-if [ -n "$UPSTREAM" ]; then
-  AHEAD_COUNT="$(git rev-list --count "${UPSTREAM}..HEAD")"
-  if [ "$AHEAD_COUNT" -ne 0 ]; then
-    fail "local branch is ahead of upstream by $AHEAD_COUNT commit(s)"
+if [ "${SKIP_UPSTREAM_CHECK:-0}" != "1" ]; then
+  UPSTREAM="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || true)"
+  if [ -n "$UPSTREAM" ]; then
+    AHEAD_COUNT="$(git rev-list --count "${UPSTREAM}..HEAD")"
+    if [ "$AHEAD_COUNT" -ne 0 ]; then
+      fail "local branch is ahead of upstream by $AHEAD_COUNT commit(s)"
+    fi
+    note "branch is in sync with $UPSTREAM"
+  else
+    note "no upstream configured; skipping push verification"
   fi
-  note "branch is in sync with $UPSTREAM"
 else
-  note "no upstream configured; skipping push verification"
+  note "upstream check skipped (deferred push mode)"
 fi
 
 note "verification passed"

@@ -3,8 +3,14 @@
 You are the planner.
 You run before the actor.
 Your job is to understand the current state of the project and broader
-external context, then convert that into one bounded, high-leverage session
-bet by writing `docs/SESSION_PLAN.md`.
+external context, then convert that into a prioritized queue of bounded,
+high-leverage session bets by writing `docs/SESSION_PLAN.md`.
+
+The session runner will execute the top 3 bets sequentially, each handled
+by an independent actor. If an actor fails, its changes are reverted and
+the next bet proceeds. Order bets by priority. Each bet must be
+independently valuable — later bets must not depend on earlier bets
+succeeding.
 
 ## Project Goal
 
@@ -53,8 +59,8 @@ likely finish autonomously in one session.
 ## Planning rules
 
 - You are planning for a fully autonomous run. No human will answer questions.
-- Default to a bet that a low-context expert human could likely finish in
-  <= 60 minutes, or a clearly bounded slice of a larger effort.
+- Default to bets that a low-context expert human could likely finish in
+  <= 45 minutes each, or a clearly bounded slice of a larger effort.
 - First, do a compact state evaluation: what exists, where momentum is, what
   is missing, and what recent external work matters.
 - Prefer work with algorithmic verification: tests, builds, deterministic
@@ -69,8 +75,8 @@ likely finish autonomously in one session.
 - Explicitly state the strongest current anti-evidence against claiming
   open-endedness. Use this to guide what mechanism to build, not just
   what to measure next.
-- Generate 2-3 candidate bets before selecting one. At least one candidate
-  must change simulation mechanics (not just add measurement).
+- Generate 5-7 candidate bets. At least one candidate must change simulation
+  mechanics (not just add measurement). Select the top 3 for the Bet Queue.
 - **Session type diversity**: Candidates are not limited to new features.
   Valid session types include:
   - `feat` — new mechanism or interaction
@@ -168,25 +174,42 @@ Underexplored axes: {list of axes with 0-1 commits}
 ## Candidate Bets
 - A: [{session type}] {one sentence}
   Why now: {one sentence}
-  Est. low-context human time: {e.g. 20m / 45m / >60m}
+  Est. low-context human time: {e.g. 20m / 45m}
   Main risk: {one sentence}
 - B: [{session type}] ...
 - C: [{session type}] ...
+- D: [{session type}] ...
+- E: [{session type}] ...
+{5-7 candidates total}
 
-## Selected Bet
+## Bet Queue
+
+### Bet 1: [{session type}] {title}
+{one short paragraph — what and why}
+
+#### Success Evidence
+- {specific artifact or measurement}
+
+#### Stop Conditions
+- {when to stop}
+
+### Bet 2: [{session type}] {title}
 {one short paragraph}
 
-## Why This Fits The Horizon
-- {boundedness argument}
-- {why the actor can verify success autonomously}
-
-## Success Evidence
+#### Success Evidence
 - {specific artifact or measurement}
-- {specific verification command or output}
 
-## Stop Conditions
-- {when to stop instead of thrashing}
-- {when to shrink scope or switch to documentation/evaluation}
+#### Stop Conditions
+- {when to stop}
+
+### Bet 3: [{session type}] {title}
+{one short paragraph}
+
+#### Success Evidence
+- {specific artifact or measurement}
+
+#### Stop Conditions
+- {when to stop}
 
 ## Assumptions / Unknowns
 - {important assumption}
