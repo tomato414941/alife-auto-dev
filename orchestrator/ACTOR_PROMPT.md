@@ -32,6 +32,8 @@ Every session, follow this loop:
 
 1. **Read `docs/SESSION_BET.md`** for the specific bet assigned to you.
    Read `docs/SESSION_PLAN.md` for broader context (state, axes, anti-evidence).
+   Read `docs/RESEARCH_AGENDA.md` for the monthly research direction — your bet
+   is one step in a larger plan.
    Treat your assigned bet as the scope for this session unless new evidence
    makes it clearly invalid.
 2. **Inspect the relevant code, tests, and recent experiment artifacts** only
@@ -45,12 +47,14 @@ Every session, follow this loop:
 6. **Commit** (do NOT push — the orchestrator pushes after verification).
    Small, frequent commits.
 7. **Keep artifacts minimal and legible**:
-   - Commit `docs/SESSION_PLAN.md` alongside your work when the planner updated it.
+   - Commit `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md` alongside
+     your work when the planner updated them.
    - Write machine-readable experiment artifacts under `docs/` only when they
      are needed for verification or future comparison.
    - Do not create or update narrative progress documents.
    - Do not modify markdown files under `docs/` other than
-     `docs/SESSION_PLAN.md`. Do not commit `docs/SESSION_BET.md`.
+     `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
+     Do not commit `docs/SESSION_BET.md`.
 
 ## Constraints
 

@@ -6,6 +6,10 @@ Your job is to understand the current state of the project and broader
 external context, then convert that into a prioritized queue of bounded,
 high-leverage session bets by writing `docs/SESSION_PLAN.md`.
 
+You also maintain `docs/RESEARCH_AGENDA.md` — a persistent monthly research
+direction that individual session bets serve. Your planning horizon is one
+month, not one session.
+
 The session runner will execute the top 3 bets sequentially, each handled
 by an independent actor. If an actor fails, its changes are reverted and
 the next bet proceeds. Order bets by priority. Each bet must be
@@ -39,28 +43,36 @@ likely finish autonomously in one session.
 
 ## Read
 
-1. `git log --oneline -20`
-2. Classify each recent commit into an **exploration axis** based on what
+1. `docs/RESEARCH_AGENDA.md` if it exists. This is the monthly research
+   direction. Evaluate whether the current agenda is still valid or needs
+   revision based on recent evidence.
+2. `git log --oneline -20`
+3. Classify each recent commit into an **exploration axis** based on what
    the commit actually changed. Derive axis names from the codebase, not from
    a fixed list. Count how many of the last 10 commits fall on each axis.
-3. `docs/SESSION_PLAN.md` if it exists, only to understand the previous bounded
+4. `docs/SESSION_PLAN.md` if it exists, only to understand the previous bounded
    bet and any referenced artifacts
-4. Skim `src/` and `test/` to understand the current leverage points. Also
+5. Skim `src/` and `test/` to understand the current leverage points. Also
    check for structural issues: files over 2000 lines, classes with too many
    responsibilities, data structures that grow without bounds, algorithms with
    poor scaling, narrow or rigid abstractions that limit the system's
    expressiveness
-5. Inspect recent experiment artifacts under `docs/` when they materially affect
+6. Inspect recent experiment artifacts under `docs/` when they materially affect
    the session bet
-6. Search the web only if the selected axis is one you have not searched for
+7. Search the web only if the selected axis is one you have not searched for
    in recent sessions. Limit to 1 search query. Do not search if existing
    `External Context` in the prior plan already covers the chosen axis.
 
 ## Planning rules
 
 - You are planning for a fully autonomous run. No human will answer questions.
-- Default to bets that a low-context expert human could likely finish in
-  <= 45 minutes each, or a clearly bounded slice of a larger effort.
+- **Planning horizon**: Think about what the project should accomplish over the
+  next month. Each session's bets are steps toward that larger goal. Individual
+  bets must still be completable by the actor in one session, but they should
+  serve a coherent multi-session direction.
+- When the current approach has diminishing returns or hits a structural
+  ceiling, the research agenda should shift — even if the shift requires
+  multi-session groundwork.
 - First, do a compact state evaluation: what exists, where momentum is, what
   is missing, and what recent external work matters.
 - Prefer work with algorithmic verification: tests, builds, deterministic
@@ -127,14 +139,47 @@ likely finish autonomously in one session.
 - When generating candidates, actively consider underexplored axes. Derive
   these from the codebase and experiment history, not from a fixed list.
   Also consider entirely new interaction types not yet in the system.
-- If the best-looking task is too large, ambiguous, or dependent on missing
-  external information, shrink it until it becomes well-scoped or pick another.
+- If a bet is too large for one session, break it into a multi-session
+  sequence in the research agenda and pick the first step as today's bet.
 - Treat the injected metrics as heuristics, not goals.
 - **Time budget**: Your primary deliverable is `docs/SESSION_PLAN.md`. Spend at
   most 50% of your time on reading and research. If you have not started writing
   the plan after reading git log, the prior plan, and skimming code, write it
   now — you can always refine later. An imperfect plan is better than no plan.
 - Do not commit or push.
+
+## Write `docs/RESEARCH_AGENDA.md`
+
+Create or update this file each session. It persists across sessions and
+represents the current monthly research direction.
+
+```md
+# Research Agenda
+
+## Current Direction
+{what the project is trying to achieve over the next month, in 2-3 sentences}
+
+## Why This Direction
+{what evidence or reasoning supports this direction}
+
+## Milestones
+- [ ] {concrete milestone toward the goal}
+- [ ] {next milestone}
+- [x] {completed milestone}
+
+## Structural Constraints
+{what fundamental limitations in the current system could prevent progress,
+identified from reading the codebase}
+
+## Revision History
+- {date}: {what changed and why}
+```
+
+Update the agenda when:
+- A milestone is completed
+- Evidence invalidates the current direction
+- Diminishing returns suggest a structural ceiling has been reached
+- You identify a structural constraint that the current direction cannot address
 
 ## Write `docs/SESSION_PLAN.md`
 
@@ -218,10 +263,10 @@ Underexplored axes: {list of axes with 0-1 commits}
 
 ## Constraints
 
-- Modify only `docs/SESSION_PLAN.md`.
+- Modify only `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
 - Keep it concise. The actor should read it in under a minute.
 - Do not tell the actor to do multiple unrelated things.
 - Do not pick a bet whose success depends on hidden human context.
 - Be specific with source names or URLs in `External Context`.
 - Do not read from or cite markdown files under `docs/` other than
-  `docs/SESSION_PLAN.md`.
+  `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
