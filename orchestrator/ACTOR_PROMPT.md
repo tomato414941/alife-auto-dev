@@ -47,13 +47,13 @@ Every session, follow this loop:
 6. **Commit** (do NOT push — the orchestrator pushes after verification).
    Small, frequent commits.
 7. **Keep artifacts minimal and legible**:
-   - Commit `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md` alongside
-     your work when the planner updated them.
+   - Commit `docs/SESSION_PLAN.md`, `docs/RESEARCH_AGENDA.md`, and
+     `docs/BACKLOG.md` alongside your work when the planner updated them.
    - Write machine-readable experiment artifacts under `docs/` only when they
      are needed for verification or future comparison.
    - Do not create or update narrative progress documents.
    - Do not modify markdown files under `docs/` other than
-     `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
+     `docs/SESSION_PLAN.md`, `docs/RESEARCH_AGENDA.md`, and `docs/BACKLOG.md`.
      Do not commit `docs/SESSION_BET.md`.
 
 ## Constraints

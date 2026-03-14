@@ -46,6 +46,8 @@ likely finish autonomously in one session.
 1. `docs/RESEARCH_AGENDA.md` if it exists. This is the monthly research
    direction. Evaluate whether the current agenda is still valid or needs
    revision based on recent evidence.
+   `docs/BACKLOG.md` if it exists. This is the prioritized task list.
+   Review, update, and select the top 3 for today's Bet Queue.
 2. `git log --oneline -20`
 3. Classify each recent commit into an **exploration axis** based on what
    the commit actually changed. Derive axis names from the codebase, not from
@@ -142,15 +144,6 @@ represents the current monthly research direction.
 ## Why This Direction
 {what evidence or reasoning supports this direction}
 
-## Backlog
-{prioritized list of session-sized tasks. Each item has a type label.
-Top items are highest priority. Completed items are removed.
-Add new items when evidence suggests them. Re-prioritize based on results.}
-
-1. [{type}] {task description}
-2. [{type}] {task description}
-...
-
 ## Structural Constraints
 {what fundamental limitations in the current system could prevent progress,
 identified from reading the codebase}
@@ -159,11 +152,29 @@ identified from reading the codebase}
 - {date}: {what changed and why}
 ```
 
-Update the agenda every session:
-- Remove completed items from the backlog
+Update the agenda when:
+- Evidence invalidates the current direction
+- Diminishing returns suggest a structural ceiling has been reached
+- You identify a structural constraint that the current direction cannot address
+
+## Write `docs/BACKLOG.md`
+
+Create or update this file each session. It is a prioritized TODO list of
+session-sized tasks that serve the research agenda.
+
+```md
+# Backlog
+
+1. [{type}] {task description}
+2. [{type}] {task description}
+...
+```
+
+Update every session:
+- Remove completed items
 - Add new items based on recent evidence or structural observations
 - Re-prioritize based on results and diminishing returns
-- Revise the direction when a structural ceiling is reached
+- The top 3 items become this session's Bet Queue
 
 ## Write `docs/SESSION_PLAN.md`
 
@@ -201,7 +212,7 @@ Underexplored axes: {list of axes with 0-1 commits}
 - {optional second reason only if materially different}
 
 ## Bet Queue
-{top 3 items selected from the research agenda backlog}
+{top 3 items from docs/BACKLOG.md}
 
 ### Bet 1: [{session type}] {title}
 {one short paragraph — what and why}
@@ -237,10 +248,11 @@ Underexplored axes: {list of axes with 0-1 commits}
 
 ## Constraints
 
-- Modify only `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
+- Modify only `docs/SESSION_PLAN.md`, `docs/RESEARCH_AGENDA.md`, and
+  `docs/BACKLOG.md`.
 - Keep it concise. The actor should read it in under a minute.
 - Do not tell the actor to do multiple unrelated things.
 - Do not pick a bet whose success depends on hidden human context.
 - Be specific with source names or URLs in `External Context`.
 - Do not read from or cite markdown files under `docs/` other than
-  `docs/SESSION_PLAN.md` and `docs/RESEARCH_AGENDA.md`.
+  `docs/SESSION_PLAN.md`, `docs/RESEARCH_AGENDA.md`, and `docs/BACKLOG.md`.

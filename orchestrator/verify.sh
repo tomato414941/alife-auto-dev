@@ -74,7 +74,8 @@ if [ -n "$BASE_REV" ] && git rev-parse --verify "$BASE_REV^{commit}" >/dev/null 
       grep '^docs/.*\.md$' |
       grep -v '^docs/SESSION_PLAN\.md$' |
       grep -v '^docs/SESSION_BET\.md$' |
-      grep -v '^docs/RESEARCH_AGENDA\.md$' || true
+      grep -v '^docs/RESEARCH_AGENDA\.md$' |
+      grep -v '^docs/BACKLOG\.md$' || true
   )"
   if [ -n "$UNEXPECTED_DOC_MARKDOWN_CHANGES" ]; then
     echo "$UNEXPECTED_DOC_MARKDOWN_CHANGES" >&2
