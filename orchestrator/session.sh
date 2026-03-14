@@ -127,11 +127,9 @@ done
 rm -f "$ALIFE_DIR/docs/SESSION_BET.md"
 
 # --- Step 4 (optional): Critic ---
-FINISHED_COUNT=$(grep -c '|finished|' "$SESSIONS_LOG" 2>/dev/null || echo 0)
-CRITIC_INTERVAL="${CRITIC_INTERVAL:-5}"
-if [ $((FINISHED_COUNT % CRITIC_INTERVAL)) -eq 0 ] && [ "$FINISHED_COUNT" -gt 0 ]; then
+if true; then
   LOG_CRITIC="$LOGDIR/${LOG_BASENAME}_critic.log"
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Critic (every $CRITIC_INTERVAL sessions)"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Critic"
   CRITIC_EXIT=0
   timeout "${CRITIC_TIMEOUT:-30}m" codex exec \
     "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/CRITIC_PROMPT.md")" \
