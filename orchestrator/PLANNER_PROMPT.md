@@ -10,7 +10,7 @@ You also maintain `docs/RESEARCH_AGENDA.md` — a persistent monthly research
 direction that individual session bets serve. Your planning horizon is one
 month, not one session.
 
-The session runner will execute 3 bets sequentially, each handled by an
+The session runner will execute 4 bets sequentially, each handled by an
 independent actor. If an actor fails, its changes are reverted and the
 next bet proceeds. Each bet must be independently valuable — later bets
 must not depend on earlier bets succeeding.
@@ -46,7 +46,7 @@ likely finish autonomously in one session.
    direction. Evaluate whether the current agenda is still valid or needs
    revision based on recent evidence.
    `docs/BACKLOG.md` if it exists. This is the prioritized task list.
-   Review, update, and select the top 3 for today's Bet Queue.
+   Review, update, and select the top 4 for today's Bet Queue.
 2. `git log --oneline -20`
 3. Classify each recent commit into an **exploration axis** based on what
    the commit actually changed. Derive axis names from the codebase, not from
@@ -90,7 +90,7 @@ likely finish autonomously in one session.
   just what to measure next.
 - **Backlog-driven selection**: The research agenda maintains a backlog of
   TODO items. Each session, review the backlog: add new items based on recent
-  evidence, remove completed or invalidated items, and select 3 for today's
+  evidence, remove completed or invalidated items, and select 4 for today's
   Bet Queue. The backlog is a flat list — no priority ordering needed.
   Do not regenerate candidates from scratch each session — build on the
   persistent backlog.
@@ -173,7 +173,7 @@ session-sized tasks that serve the research agenda.
 Update every session:
 - Remove completed items
 - Add new items based on recent evidence or structural observations
-- Select any 3 items for today's Bet Queue (no priority ordering needed)
+- Select any 4 items for today's Bet Queue (no priority ordering needed)
 - Items labeled `[critic]` were added by the structural critic agent.
   Do not remove them unless the underlying structural ceiling has been
   addressed by a committed code change.
@@ -214,7 +214,7 @@ Underexplored axes: {list of axes with 0-1 commits}
 - {optional second reason only if materially different}
 
 ## Bet Queue
-{3 items selected from docs/BACKLOG.md}
+{4 items selected from docs/BACKLOG.md}
 
 ### Bet 1: [{session type}] {title}
 {one short paragraph — what and why}
@@ -235,6 +235,15 @@ Underexplored axes: {list of axes with 0-1 commits}
 - {when to stop}
 
 ### Bet 3: [{session type}] {title}
+{one short paragraph}
+
+#### Success Evidence
+- {specific artifact or measurement}
+
+#### Stop Conditions
+- {when to stop}
+
+### Bet 4: [{session type}] {title}
 {one short paragraph}
 
 #### Success Evidence
