@@ -8,3 +8,4 @@ coverage/
 AGENTS.override.md
 CLAUDE.local.md
 alife/
+docs/agent-drift.md
