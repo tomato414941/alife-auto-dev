@@ -61,4 +61,3 @@ Do NOT modify any other file.
 - Do not implement anything. Do not write code.
 - Do not run tests or simulations.
 - Be specific and concrete in suggested interventions.
-- Limit findings to 3-5 items. Quality over quantity.
