@@ -17,11 +17,12 @@ Orchestrator for autonomous alife simulation development.
 ## Pipeline
 
 ```
-cron (daily 03:00 UTC)
-  └─ run.sh
-       ├─ Planner (codex exec) — pick one bounded bet → docs/SESSION_PLAN.md
-       ├─ Actor (codex exec)   — implement, test, push to alife repo
-       └─ Verifier (bash)      — tests, build, git/doc checks
+run.sh (lock, secrets, choose_engine)
+  └─ session.sh
+       ├─ Planner (codex or claude, random) — pick 4 bets → docs/SESSION_PLAN.md
+       ├─ Actor x4 (codex or claude, random per actor)
+       │    └─ Verifier (bash) — tests, build, git/doc checks
+       └─ Critic (codex or claude, random) — structural ceilings → docs/BACKLOG.md
 ```
 
 ## Rules

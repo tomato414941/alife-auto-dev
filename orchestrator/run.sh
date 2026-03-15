@@ -11,8 +11,14 @@ mkdir -p "$PROJECT_DIR/logs"
 exec 200>"$LOCKFILE"
 flock -n 200 || { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) SKIP: another session running" >> "$PROJECT_DIR/logs/sessions.log"; exit 0; }
 
-# Load API key
+# Load API key (codex)
 source ~/.secrets/openai
+
+# Randomly choose engine for each agent invocation
+choose_engine() {
+  if (( RANDOM % 2 )); then echo "claude"; else echo "codex"; fi
+}
+export -f choose_engine
 
 # Execute session (planner, actor, deterministic verification)
 bash "$SCRIPT_DIR/session.sh"
