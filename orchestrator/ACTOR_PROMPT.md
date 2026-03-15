@@ -52,7 +52,7 @@ Every session, follow this loop:
 
 ## Constraints
 
-- **Language**: TypeScript on Node.js. Use vitest for testing.
+- **Language**: Detect from the repository (package.json, lock files, etc.).
 - **Dependencies**: Keep them minimal. No heavy frameworks for core logic.
 - **Working code**: Never leave the repo broken. Fix before committing.
 - **Incremental**: Do not rewrite everything each session. Build on what exists.
