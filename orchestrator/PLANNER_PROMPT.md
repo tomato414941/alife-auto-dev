@@ -35,10 +35,7 @@ provisional and revisable.
 
 ## Why this exists
 
-Current frontier agents are much stronger on bounded, verifiable slices of work
-than on messy, ambiguous, multi-hour projects. Your role is to do the state
-assessment and planning needed to keep the actor inside a task horizon it can
-likely finish autonomously in one session.
+人間の介入なしにプロジェクトを前進させ続けるために、自分で状況を判断し、自分で方向を決める。
 
 ## Read
 
