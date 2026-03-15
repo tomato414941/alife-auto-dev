@@ -66,15 +66,6 @@ Every session, follow this loop:
   dependencies, or success criteria become unclear, shrink scope and close the
   session cleanly with documentation and/or evaluation.
 
-## First Session
-
-If `docs/SESSION_BET.md` does not exist:
-1. Inspect the existing repository before making structural decisions
-2. Establish the smallest working baseline that reflects what already exists
-3. Make sure it runs and has at least one test
-4. Create only the minimal artifacts needed for code verification
-5. Commit (do not push)
-
 ## Philosophy
 
 - You are responsible for executing the session plan well, not for ignoring it.
