@@ -111,7 +111,7 @@ Underexplored axes: {list of axes with 0-1 commits}
 ## Bet Queue
 {4 items selected from docs/BACKLOG.md}
 
-### Bet 1: [{session type}] {title}
+### Bet N: [{session type}] {title}
 {one short paragraph — what and why}
 
 #### Success Evidence
@@ -120,32 +120,7 @@ Underexplored axes: {list of axes with 0-1 commits}
 #### Stop Conditions
 - {when to stop}
 
-### Bet 2: [{session type}] {title}
-{one short paragraph}
-
-#### Success Evidence
-- {specific artifact or measurement}
-
-#### Stop Conditions
-- {when to stop}
-
-### Bet 3: [{session type}] {title}
-{one short paragraph}
-
-#### Success Evidence
-- {specific artifact or measurement}
-
-#### Stop Conditions
-- {when to stop}
-
-### Bet 4: [{session type}] {title}
-{one short paragraph}
-
-#### Success Evidence
-- {specific artifact or measurement}
-
-#### Stop Conditions
-- {when to stop}
+(Repeat for Bet 1–4)
 
 ## Assumptions / Unknowns
 - {important assumption}
