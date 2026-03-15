@@ -13,12 +13,10 @@ mkdir -p "$LOGDIR"
 LOG_BASENAME="$(date +%Y%m%d_%H%M%S)"
 LOG_PLANNER="$LOGDIR/${LOG_BASENAME}_planner.log"
 
-# Choose engine for this session
-ENGINE=$(choose_engine)
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
-echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|engine=${ENGINE}|$LOG_BASENAME" >> "$SESSIONS_LOG"
-
-# Helper: run prompt through chosen engine
+# Helper: run prompt through randomly chosen engine
+# Returns engine name via LAST_ENGINE variable for logging
 run_agent() {
   local prompt="$1"
   local workdir="$2"
@@ -26,7 +24,8 @@ run_agent() {
   local log_err="$4"
   local timeout_min="$5"
 
-  if [ "$ENGINE" = "claude" ]; then
+  LAST_ENGINE=$(choose_engine)
+  if [ "$LAST_ENGINE" = "claude" ]; then
     (cd "$workdir" && timeout "${timeout_min}m" claude -p \
       --model sonnet \
       --dangerously-skip-permissions \
@@ -43,10 +42,9 @@ run_agent() {
 }
 
 # --- Step 1: Session Planner ---
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Session Planner (engine=$ENGINE)"
 PLANNER_EXIT=0
 run_agent "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/PLANNER_PROMPT.md")" "$ALIFE_DIR" "$LOG_PLANNER" "$LOG_PLANNER.err" "${PLANNER_TIMEOUT:-45}" || PLANNER_EXIT=$?
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session Planner finished (exit=$PLANNER_EXIT)"
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session Planner finished (engine=$LAST_ENGINE, exit=$PLANNER_EXIT)"
 
 if [ "$PLANNER_EXIT" -ne 0 ]; then
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Session Planner failed — aborting"
@@ -100,10 +98,9 @@ for i in $(seq 1 "$BET_COUNT"); do
   ACTOR_BASE_REV="$(git -C "$ALIFE_DIR" rev-parse HEAD)"
 
   # Run Actor
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Actor $i/$BET_COUNT"
   ACTOR_EXIT=0
   run_agent "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/ACTOR_PROMPT.md")" "$ALIFE_DIR" "$LOG_ACTOR" "$LOG_ACTOR.err" "${ACTOR_TIMEOUT:-45}" || ACTOR_EXIT=$?
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i finished (exit=$ACTOR_EXIT)"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i finished (engine=$LAST_ENGINE, exit=$ACTOR_EXIT)"
 
   if [ "$ACTOR_EXIT" -ne 0 ]; then
     echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i failed — reverting"
@@ -148,10 +145,9 @@ rm -f "$ALIFE_DIR/docs/SESSION_BET.md"
 # --- Step 4 (optional): Critic ---
 if true; then
   LOG_CRITIC="$LOGDIR/${LOG_BASENAME}_critic.log"
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Critic"
   CRITIC_EXIT=0
   run_agent "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/CRITIC_PROMPT.md")" "$ALIFE_DIR" "$LOG_CRITIC" "$LOG_CRITIC.err" "${CRITIC_TIMEOUT:-30}" || CRITIC_EXIT=$?
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic finished (exit=$CRITIC_EXIT)"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic finished (engine=$LAST_ENGINE, exit=$CRITIC_EXIT)"
   if [ "$CRITIC_EXIT" -eq 0 ]; then
     if git -C "$ALIFE_DIR" diff --quiet docs/BACKLOG.md 2>/dev/null; then
       echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Critic made no BACKLOG changes"
