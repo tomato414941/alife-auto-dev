@@ -14,7 +14,7 @@ LOG_BASENAME="$(date +%Y%m%d_%H%M%S)"
 LOG_PLANNER="$LOGDIR/${LOG_BASENAME}_planner.log"
 
 # Choose engine for this session
-ENGINE=$(choose_engine "$SESSIONS_LOG")
+ENGINE=$(choose_engine)
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)|started|engine=${ENGINE}|$LOG_BASENAME" >> "$SESSIONS_LOG"
 
