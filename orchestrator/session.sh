@@ -96,16 +96,13 @@ for i in $(seq 1 "$BET_COUNT"); do
     fi
   fi
 
-  ACTOR_BASE_REV="$(git -C "$ALIFE_DIR" rev-parse HEAD)"
-
   # Run Actor
   ACTOR_EXIT=0
   run_agent "$(cat "$HOME/AGENTS.md" "$SCRIPT_DIR/ACTOR_PROMPT.md")" "$ALIFE_DIR" "$LOG_ACTOR" "$LOG_ACTOR.err" "${ACTOR_TIMEOUT:-45}" || ACTOR_EXIT=$?
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i finished (engine=$LAST_ENGINE, exit=$ACTOR_EXIT)"
 
   if [ "$ACTOR_EXIT" -ne 0 ]; then
-    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i failed — reverting"
-    git -C "$ALIFE_DIR" reset --hard "$ACTOR_BASE_REV"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Actor $i failed (exit=$ACTOR_EXIT)"
     ACTORS_FAILED=$((ACTORS_FAILED + 1))
     ACTOR_RESULTS="${ACTOR_RESULTS}|bet${i}=actor_fail(${ACTOR_EXIT})"
     continue
@@ -115,13 +112,12 @@ for i in $(seq 1 "$BET_COUNT"); do
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Starting Verifier for Actor $i"
   VERIFY_EXIT=0
   SKIP_UPSTREAM_CHECK=1 timeout "${VERIFY_TIMEOUT:-15}m" \
-    bash "$SCRIPT_DIR/verify.sh" "$ALIFE_DIR" "$ACTOR_BASE_REV" \
+    bash "$SCRIPT_DIR/verify.sh" "$ALIFE_DIR" \
     > "$LOG_VERIFY" 2>"$LOG_VERIFY.err" || VERIFY_EXIT=$?
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Verifier $i finished (exit=$VERIFY_EXIT)"
 
   if [ "$VERIFY_EXIT" -ne 0 ]; then
-    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Verifier $i failed — reverting"
-    git -C "$ALIFE_DIR" reset --hard "$ACTOR_BASE_REV"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Verifier $i failed"
     ACTORS_FAILED=$((ACTORS_FAILED + 1))
     ACTOR_RESULTS="${ACTOR_RESULTS}|bet${i}=verify_fail(${VERIFY_EXIT})"
     continue
@@ -133,8 +129,7 @@ for i in $(seq 1 "$BET_COUNT"); do
     ACTORS_SUCCEEDED=$((ACTORS_SUCCEEDED + 1))
     ACTOR_RESULTS="${ACTOR_RESULTS}|bet${i}=ok"
   else
-    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Push failed for Actor $i — reverting"
-    git -C "$ALIFE_DIR" reset --hard "$ACTOR_BASE_REV"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Push failed for Actor $i"
     ACTORS_FAILED=$((ACTORS_FAILED + 1))
     ACTOR_RESULTS="${ACTOR_RESULTS}|bet${i}=push_fail"
   fi
