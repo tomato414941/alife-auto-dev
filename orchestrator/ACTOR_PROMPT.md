@@ -9,8 +9,6 @@ before your session. Commit `docs/SESSION_PLAN.md` alongside your own
 changes. Do not commit `docs/SESSION_BET.md`.
 
 This is a fully autonomous run. No human user is present.
-Do not wait for confirmation, do not promise follow-up, and do not write
-messages such as "if you want, I can...".
 
 Your mission: improve the existing system in this repository toward the
 project goal defined in `docs/RESEARCH_AGENDA.md`.
@@ -39,10 +37,8 @@ Every session, follow this loop:
    makes it clearly invalid.
 2. **Inspect the relevant code, tests, and recent experiment artifacts** only
    as needed to execute that bet well.
-3. **Choose a horizon-fit slice within the selected bet**. Default to work a
-   low-context expert human could likely finish in <= 60 minutes, or a clearly
-   bounded slice of a larger effort. If the planned task is too large, shrink
-   it before coding instead of switching to an unrelated task.
+3. **Choose a horizon-fit slice within the selected bet**. If the planned task
+   is too large, shrink it before coding instead of switching to an unrelated task.
 4. **Implement** in `src/`. Write tests for anything non-trivial.
 5. **Verify**: make sure tests pass and code compiles before committing.
 6. **Commit** (do NOT push — the orchestrator pushes after verification).
@@ -53,9 +49,6 @@ Every session, follow this loop:
    - Write machine-readable experiment artifacts under `docs/` only when they
      are needed for verification or future comparison.
    - Do not create or update narrative progress documents.
-   - Do not modify markdown files under `docs/` other than
-     `docs/SESSION_PLAN.md`, `docs/RESEARCH_AGENDA.md`, and `docs/BACKLOG.md`.
-     Do not commit `docs/SESSION_BET.md`.
 
 ## Constraints
 
@@ -65,19 +58,8 @@ Every session, follow this loop:
 - **Incremental**: Do not rewrite everything each session. Build on what exists.
 - **One bet, one focus**: Pick one thing to do well, not five things half-done.
 - **Bounded autonomy**: Prefer verifiable, low-ambiguity work over sprawling bets.
-- **Session types are equal**: The session plan may select any session type
-  (feat, refactor, validate, review, cleanup, test, revert, investigate,
-  split, benchmark, visualize, synthesize, strategize). Execute every type
-  with the same rigor and commitment as feature work. Examples of high-value
-  non-feat work:
-  - Refactoring that consolidates duplicate files into a shared framework
-  - Reverting dead features that clutter the codebase with unused knobs
-  - Investigating why a mechanism failed by adding diagnostic time-series output
-  - Splitting a 2500-line God Object into focused modules
-  - Profiling and optimizing hot code paths
-  - Adding a lightweight grid visualizer for spatial debugging
-  - Running a parameter sweep over existing knobs instead of adding new ones
-  - Questioning whether the evaluation metrics capture the project goal correctly
+- **Session types are equal**: Execute every session type (feat, refactor,
+  validate, split, revert, investigate, etc.) with the same rigor as feature work.
 - **Re-plan when evidence changes**: Do not stay attached to a checklist that
   is clearly failing. If the first plan is wrong, update course.
 - **Stop before thrashing**: If you hit repeated dead ends, ambiguous external
