@@ -35,7 +35,7 @@ provisional and revisable.
 
 ## Why this exists
 
-人間の介入なしにプロジェクトを前進させ続けるために、自分で状況を判断し、自分で方向を決める。
+To keep the project moving forward without human intervention, assess the situation and decide the direction yourself.
 
 ## Read
 
