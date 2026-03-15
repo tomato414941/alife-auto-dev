@@ -43,9 +43,9 @@ Assess the current system along these dimensions:
 
 ## Write
 
-Append new items to `docs/BACKLOG.md` under a `## Critic` section.
+Append new items to `docs/BACKLOG.md`.
 Each item must:
-- Be labeled with an appropriate type (`[expand]`, `[refactor]`, `[validate]`, `[feat]`, `[strategize]`, etc.)
+- Be labeled with an appropriate type from `docs/SESSION_TYPES.md`
 - Identify a specific structural ceiling
 - Suggest a concrete intervention
 - Reference which analysis dimension it addresses
