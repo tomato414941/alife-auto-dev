@@ -45,7 +45,7 @@ Assess the current system along these dimensions:
 
 Append new items to `docs/BACKLOG.md` under a `## Critic` section.
 Each item must:
-- Be labeled `[critic]` to distinguish from Planner-generated items
+- Be labeled with an appropriate type (`[expand]`, `[refactor]`, `[validate]`, `[feat]`, `[strategize]`, etc.)
 - Identify a specific structural ceiling
 - Suggest a concrete intervention
 - Reference which analysis dimension it addresses

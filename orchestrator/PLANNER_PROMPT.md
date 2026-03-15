@@ -69,10 +69,9 @@ Update the agenda when:
 
 ## Write `docs/BACKLOG.md`
 
-Flat list of `[{type}] {task description}` items. Types: feat, refactor, validate, review, cleanup, test, revert, investigate, split, benchmark, visualize, synthesize, strategize.
+Flat list of `[{type}] {task description}` items. Types: feat, expand, refactor, validate, review, cleanup, test, revert, investigate, split, benchmark, visualize, synthesize, strategize, spike.
 
-`[critic]` items were added by the structural critic agent.
-Do not remove them unless the underlying issue has been addressed by code.
+Items with a bracketed label like `[Representational Capacity]` were identified by the structural critic agent. Do not remove them unless the underlying issue has been addressed by code.
 
 ## Write `docs/SESSION_PLAN.md`
 
