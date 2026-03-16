@@ -28,6 +28,7 @@ run_agent() {
   if [ "$LAST_ENGINE" = "claude" ]; then
     (cd "$workdir" && timeout "${timeout_min}m" claude -p \
       --model sonnet \
+      --verbose \
       --output-format stream-json \
       --dangerously-skip-permissions \
       --append-system-prompt "$prompt" \
